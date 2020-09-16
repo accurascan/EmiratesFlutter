@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomTextView">
+        <attr name="typeface" />
+    </declare-styleable>
+
+    <attr name="typeface" format="enum">
+        <enum name="ALLER_STD" value="0" />
+        <enum name="ALLER_STD_BOLD" value="1" />
+        <enum name="ALLER_STD_ITALIC" value="2" />
+        <enum name="ALLER_STD_LIGHT" value="3" />
+        <enum name="ALLER_STD_LIGHT_ITALIC" value="4" />
+        <enum name="ALLER_STD_REG" value="5" />
+        <enum name="ALLER_STD_DISPLAY" value="6" />
+    </attr>
+
+    <declare-styleable name="BarcodeScannerView">
+        <attr name="shouldScaleToFill" format="boolean" />
+        <attr name="laserEnabled" format="boolean" />
+        <attr name="laserColor" format="color" />
+        <attr name="borderColor" format="color" />
+        <attr name="maskColor" format="color" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="borderLength" format="dimension" />
+        <attr name="roundedCorner" format="boolean" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="squaredFinder" format="boolean" />
+        <attr name="borderAlpha" format="float" />
+        <attr name="finderOffset" format="dimension" />
+    </declare-styleable>
+
+</resources>

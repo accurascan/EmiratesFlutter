@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:contentDescription="@string/app_name"
+
+                android:visibility="visible" />
+
+        </androidx.appcompat.widget.Toolbar>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--<com.accurascandemo.orcscan.textrecognition.GraphicOverlay-->
+            <!--android:id="@+id/camera_preview_graphic_overlay"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <SurfaceView
+            android:id="@+id/camera_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/scan_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+
+            <!--&gt;-->
+
+
+            <View
+                android:id="@+id/rel_left"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:background="@color/trans_black"
+                tools:layout_editor_absoluteY="0dp"
+                tools:layout_editor_absoluteX="0dp"
+                app:layout_constraintEnd_toStartOf="@id/rel_main"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                 />
+
+
+
+            <View
+                android:id="@+id/rel_right"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:background="@color/trans_black"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/rel_main"
+                app:layout_constraintBottom_toBottomOf="parent"
+                 />
+
+            <RelativeLayout
+                android:id="@+id/ry_top"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:background="@color/trans_black"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/rel_main"
+                >
+
+
+                <RelativeLayout
+                    android:id="@+id/ry_country"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_alignParentTop="true"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/linearMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/btn_bg_red"
+                        android:orientation="horizontal"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_countryname"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingLeft="15dp"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="50dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="10dp"
+                            app:cardBackgroundColor="#ffffffff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="5dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="1dp"
+                                app:cardBackgroundColor="#00000000"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="5dp">
+
+                                <ImageView
+                                    android:id="@+id/img_country"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="fitXY" />
+                            </androidx.cardview.widget.CardView>
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_below="@+id/ry_country">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_xerox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:text="Scan PhotoCopy"
+                        android:textColor="@color/colorPrimary"
+                        app:switchPadding="@dimen/_10dp"
+                        />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_side_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:background="@android:color/transparent"
+                    android:layout_alignParentBottom="true"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ry_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/trans_black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rel_main"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+
+                <TextView
+                    android:id="@+id/tv_scan_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:background="@android:color/transparent" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rel_main"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:background="@drawable/border_red"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+
+                <ImageView
+                    android:id="@+id/ivFlipImage"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/flip"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

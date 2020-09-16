@@ -1,0 +1,134 @@
+<resources>
+    <string name="app_name">AccuraModule</string>
+
+    <string name="scan_front">Scan Front Side of Document</string>
+    <string name="scan_back">Scan Back Side of Document</string>
+
+    <string name="ok">Ok</string>
+
+
+    <string name="lastName">Last Name</string>
+    <string name="firstName">First Name</string>
+    <string name="middle_name">Middle name</string>
+    <string name="city">Mailing City</string>
+    <string name="zipcode">Mailing Postal Code</string>
+    <string name="birth_date">Date of Birth</string>
+    <string name="sex">Sex</string>
+    <string name="license_number">License or ID Number</string>
+    <string name="license_expiry_date">License Expiration Date</string>
+    <string name="jurisdiction_code">Mailing Jurisdiction Code</string>
+    <string name="license_classification">License Classification Code</string>
+    <string name="license_restriction">License Restriction Code</string>
+    <string name="license_endorsement">License Endorsement Code</string>
+    <string name="issue_date">License or ID Document Issue Date</string>
+    <string name="height_in_ft">Height in FT_IN</string>
+    <string name="full_name">Full Name</string>
+    <string name="height_in_cm">Height in CM</string>
+    <string name="weight_in_lbs">Weight in LBS</string>
+    <string name="weight_in_kg">Weight in KG</string>
+    <string name="name_prefix">Name Prefix</string>
+    <string name="name_suffix">Name Suffix</string>
+    <string name="suffix">Suffix</string>
+    <string name="prefix">Prefix</string>
+    <string name="eye_color">Eye Color</string>
+    <string name="hair_color">Hair Color</string>
+    <string name="issue_time">Issue Time</string>
+    <string name="number_of_duplicate">Number of Duplicates</string>
+    <string name="unique_customer_id">Unique Customer Identifier</string>
+    <string name="social_security_number">Social Security Number</string>
+    <string name="under_18">Under 18</string>
+    <string name="under_19">Under 19</string>
+    <string name="under_21">Under 21</string>
+    <string name="veteran_indicator">Veteran Indicator</string>
+    <string name="permit_issue">Permit Issue Date</string>
+    <string name="permit_expire">Permit Expiration Date</string>
+    <string name="permit_restriction">Permit Restriction Code</string>
+    <string name="permit_endorsement">Permit Endorsement Code</string>
+    <string name="court_restriction">Court Restriction Code</string>
+    <string name="inventory_control_no">Inventory Control No</string>
+    <string name="race_ethnicity">Race Ethnicity</string>
+    <string name="standard_vehicle_class">Standard Vehicle Classification</string>
+    <string name="document_discriminator">Document Discriminator</string>
+    <string name="ResidenceCity">Residence City</string>
+    <string name="ResidenceJurisdictionCode">Residence Jurisdiction Code</string>
+    <string name="ResidencePostalCode">Residence Postal Code</string>
+    <string name="MedicalIndicatorCodes">Medical Indicator Codes</string>
+    <string name="NonResidentIndicator">Non Resident Indicator</string>
+    <string name="VirginiaSpecificClass">Virginia Specific Class</string>
+    <string name="VirginiaSpecificRestrictions">Virginia Specific Restrictions</string>
+    <string name="VirginiaSpecificEndorsements">Virginia Specific Endorsements</string>
+    <string name="PhysicalDescriptionWeight">Physical Description Weight Range</string>
+    <string name="CountryTerritoryOfIssuance">Country Territory Of Issuance</string>
+    <string name="FederalCommercialVehicleCodes">Federal Commercial Vehicle Codes</string>
+    <string name="PlaceOfBirth">Place Of Birth</string>
+    <string name="StandardEndorsementCode">Standard Endorsement Code</string>
+    <string name="StandardRestrictionCode">Standard Restriction Code</string>
+    <string name="JuriSpeciVehiClassiDescri">Jurisdiction Specific Vehicle Classification Description</string>
+    <string name="JurisdictionSpecific">Jurisdiction Specific</string>
+    <string name="JuriSpeciRestriCodeDescri">Jurisdiction Specific Restriction Code Description</string>
+    <string name="ComplianceType">Compliance Type</string>
+    <string name="CardRevisionDate">Card Revision Date</string>
+    <string name="HazMatEndorsementExpiryDate">HazMat Endorsement Expiry Date</string>
+    <string name="FamilyNameTruncation">Family Name Truncation</string>
+    <string name="FirstNamesTruncation">First Names Truncation</string>
+    <string name="MiddleNamesTruncation">Middle Names Truncation</string>
+    <string name="LimitedDurationDocumentIndicator">Limited Duration Document Indicator</string>
+    <string name="PermitIdentifier">Permit Identifier</string>
+    <string name="AuditInformation">Audit Information</string>
+    <string name="permit_classification_code">Permit Classification Code</string>
+    <string name="organ_donor">Organ Donor</string>
+    <string name="organ_donor_indicator">Organ Donor Indicator</string>
+    <string name="addressLine1">Mailing Street Address1</string>
+    <string name="addressLine2">Mailing Street Address2</string>
+    <string name="ResidenceStreetAddress1">Residence Street Address1</string>
+    <string name="ResidenceStreetAddress2">Residence Street Address2</string>
+
+
+    <!-- message for the dialog showing the camera is disabled because of security policies. Camera cannot be used. -->
+    <string name="camera_disabled">Camera has been disabled because of security policies.</string>
+
+
+    <string name="failed">Failed</string>
+    <string name="result">Result</string>
+
+
+    <string name="mrz">MRZ</string>
+    <string name="correct_mrz">Correct Mrz</string>
+    <string name="incorrect_mrz">Incorrect Mrz</string>
+    <string name="text_female">Female</string>
+    <string name="text_male">Male</string>
+
+    <string name="scantitle">Scan Front Side of the Document</string>
+    <string name="keepdocument">Keep Document In Frame</string>
+    <string name="tips">"Hold card here.\nIt will scan actomatically."</string>
+    <string name="united_arab_emirates">United Arab Emirates</string>
+
+    <string name="liveness_check">Liveness</string>
+    <string name="authentication">Authenticated</string>
+    <string name="glassesDecision">Glasses Decision</string>
+    <string name="glassesScore">Glsses Score</string>
+    <string name="livenessAuthFacemap">Liveness result for authentication facemap</string>
+    <string name="livenessEnrollFacemap">Liveness result for enrollment facemap</string>
+    <string name="livenessScore">Liveness score</string>
+    <string name="facematchScore">FaceMatch score</string>
+    <string name="LivenessAuthResultFacemap">liveness score for authentication facemap</string>
+    <string name="livenessEnrollResultFacemap">liveness score for enrollment facemap</string>
+    <string name="matchScore">match score</string>
+    <string name="retry">Retry</string>
+
+    <string name="accura_ocr">ACCURA OCR</string>
+    <string name="accura_ocr_desp"><![CDATA[Recognizes Passport & ID MRZ. Pan & Aadhaar Cards India, UAE ID and Malaysia Id card. Works Ofﬂine]]></string>
+    <string name="accura_face">ACCURA FACE MATCH</string>
+    <string name="accura_face_desp"><![CDATA[AI & ML Based Powerful Face Detection & Recognition Solution. 1:1 and 1:N. Works Ofﬂine]]></string>
+    <string name="accura_upload">Upload Face Image</string>
+    <string name="cannot_connect_camera">Can\'t connect to the camera.</string>
+
+    <string name="text_result_bottom">Save document details and test it to retrieve the data back by using Face Match. Enter into a Password less World</string>
+    <string name="dialog_ok">Ok</string>
+    <string name="report">Report</string>
+    <string name="cancel">Cancel</string>
+    <string name="error">Error</string>
+    <string name="app_error_occurred">The app error occurred. You can send the report to developers.</string>
+    <string name="error_comment_prompt">You can add extra information and comments here:</string>
+
+</resources>

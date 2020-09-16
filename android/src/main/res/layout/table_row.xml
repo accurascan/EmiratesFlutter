@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:weightSum="2">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/tab_color"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:divider="@drawable/vertical_divider"
+        android:showDividers="middle">
+
+        <com.accurascan.accuraemirates.custom.CustomTextView
+            android:id="@+id/tv_key"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textAllCaps="true"
+            app:typeface="ALLER_STD_REG"
+            android:minHeight="40dp"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="40dp">
+
+            <!--<View-->
+                <!--android:id="@+id/view"-->
+                <!--android:layout_width="1dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/tab_color"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:minHeight="40dp"/>-->
+
+            <com.accurascan.accuraemirates.custom.CustomTextView
+                android:id="@+id/tv_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+
+                app:typeface="ALLER_STD_REG"
+                android:minHeight="40dp"/>
+
+            <ImageView
+                android:id="@+id/iv_image"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+               />
+        </RelativeLayout>
+    </LinearLayout>
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="#FFCCCCCC"/>-->
+
+</LinearLayout>
+<!--
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:divider="@drawable/table_divider"
+    android:showDividers="middle"
+    android:weightSum="2">
+
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            >
+
+            <accuraemirates_demo_demo.custom.CustomTextView
+                android:id="@+id/tv_key"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:typeface="ALLER_STD_REG" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical">
+
+                &lt;!&ndash;<View&ndash;&gt;
+                &lt;!&ndash;android:id="@+id/view"&ndash;&gt;
+                &lt;!&ndash;android:layout_width="1dp"&ndash;&gt;
+                &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+                &lt;!&ndash;android:background="@color/tab_color"&ndash;&gt;
+                &lt;!&ndash;android:layout_centerVertical="true"&ndash;&gt;
+                &lt;!&ndash;android:minHeight="40dp" />&ndash;&gt;
+
+                <accuraemirates_demo_demo.custom.CustomTextView
+                    android:id="@+id/tv_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/view"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:typeface="ALLER_STD_REG" />
+
+                <ImageView
+                    android:id="@+id/iv_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toRightOf="@+id/view" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        &lt;!&ndash;
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/tab_color" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
+
+                    </LinearLayout>
+                </LinearLayout>&ndash;&gt;
+
+
+    &lt;!&ndash;<View&ndash;&gt;
+    &lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;
+    &lt;!&ndash;android:layout_height="1dp"&ndash;&gt;
+    &lt;!&ndash;android:background="#FFCCCCCC"/>&ndash;&gt;
+
+</TableRow>-->
+<!--
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corner"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:divider="@drawable/vertical_divider"
+        android:showDividers="middle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Lorem ipsum" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Lorem ipsum" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#FFCCCCCC"></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/vertical_divider"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Lorem ipsum" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Lorem ipsum" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#FFCCCCCC"></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/vertical_divider"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Lorem ipsum" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:text="Lorem ipsum" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#FFCCCCCC"></View>
+
+</LinearLayout>-->

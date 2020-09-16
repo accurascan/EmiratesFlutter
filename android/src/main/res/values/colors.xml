@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#D32D39</color>
+    <color name="colorAccent">#D32D39</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="red">#D32D39</color>
+    <color name="tab_color">#E7344A</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="separatorGrey">#E5E2E3</color>
+    <color name="blackShade">#282828</color>
+    <color name="grey">#858585</color>
+
+    <color name="trans_black">#80000000</color>
+
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="viewfinder_laser">#ffcc0000</color>
+    <color name="viewfinder_border">#ffafed44</color>
+
+</resources>

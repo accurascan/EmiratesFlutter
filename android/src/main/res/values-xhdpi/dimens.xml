@@ -1,0 +1,10 @@
+<resources>
+
+    <dimen name="fifteen">15sp</dimen>
+    <dimen name="margin_fifteen">15dp</dimen>
+    <dimen name="margin_twenty">20dp</dimen>
+    <dimen name="margin_thirty">30dp</dimen>
+    <dimen name="sixty">64dp</dimen>
+    <dimen name="margin_two_fifty">245dp</dimen>
+
+</resources>

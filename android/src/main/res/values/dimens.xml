@@ -1,0 +1,18 @@
+<resources>
+
+    <dimen name="ten">10sp</dimen>
+    <dimen name="fifteen">15sp</dimen>
+    <dimen name="seventeen">17sp</dimen>
+    <dimen name="btn_width">170dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="barcode_reticle_stroke_width">4dp</dimen>
+    <dimen name="barcode_reticle_corner_radius">8dp</dimen>
+    <dimen name="_3sdp">3dp</dimen>
+    <dimen name="_5dp">5dp</dimen>
+    <dimen name="_10dp">10dp</dimen>
+    <dimen name="_15dp">15dp</dimen>
+    <dimen name="_8dp">8dp</dimen>
+    <dimen name="_20dp">20dp</dimen>
+    <dimen name="_2dp">2dp</dimen>
+
+</resources>
