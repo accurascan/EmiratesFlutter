@@ -1,20 +1,11 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:accuraemirates_example/camera_screen.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  Crashlytics.instance.enableInDevMode = true;
-
-  // Pass all uncaught errors to Crashlytics.
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
-
-  runZoned(() {
-    runApp(MyApp());
-  }, onError: Crashlytics.instance.recordError);
+  runApp(MyApp());
 }
 
 MethodChannel platform = MethodChannel('buildflutter.com/platform');
