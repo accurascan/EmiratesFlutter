@@ -38,7 +38,6 @@ dependencies:
   async:
   mailer2:
   flutter_mailer:
-  firebase_crashlytics:
 dev_dependencies:
   flutter_test:
     sdk: flutter
