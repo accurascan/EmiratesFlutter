@@ -30,8 +30,12 @@ public abstract class SensorsActivity extends Activity implements SensorEventLis
     // accelerometer data)
     private static final float mag[] = new float[3]; // Magnetic
 
-    //change gravThreshold according to requirement
-    private static final float gravThreshold = 0.1f;//slightly move phone - 0.1 and 0.5
+    /**
+     * Update gravThreshold value as per your requirement
+     * @gravThreshold if value is 0.1 then detect slight motion and increase it to 1
+     *                then it can not detect device motion.
+     */
+    private static final float gravThreshold = 0.1f;
     private static final float magThreshold = 1.0f;
 
     private static SensorManager sensorMgr = null;

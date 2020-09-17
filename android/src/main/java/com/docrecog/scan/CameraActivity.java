@@ -304,12 +304,11 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         if (mCardScanner == null) {
             mCardScanner = new RecogEngine();
             mCardScanner.initEngine(context, this);
-            mCardScanner.setBlurPercentage(40);
-            mCardScanner.setFaceBlurPercentage(40);
-            mCardScanner.setGlarePercentage(5,90);
-            mCardScanner.setLowLightTolerance(39);
-            mCardScanner.setHologramDetection(true);
-            mCardScanner.setMotionThreshold(15);
+            /**
+             * Update filter value according to requirement
+             * {@link RecogEngine#setFilter()}
+             */
+            mCardScanner.setFilter();
         }
 
         dm = context.getResources().getDisplayMetrics();
@@ -1365,10 +1364,10 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
             isDone = true;
             new getDocData().execute();
             // pass result data through intent to resolve crash on face match
-            application.setMrzData(g_recogResult);
+//            application.setMrzData(g_recogResult);
 //            intent.putExtra("ocrData", application);
 //            startActivityForResult(intent, 101);
-//            mCardScanner.closeOCR(0);
+            mCardScanner.closeOCR(0);
 
             playEffect();
         }

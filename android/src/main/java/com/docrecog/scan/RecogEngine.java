@@ -67,7 +67,7 @@ public class RecogEngine {
      * @param blurPercentage is 0 to 100, 0 - clean document and 100 - Blurry document
      * @return 1 if success else 0
      */
-    public native int setBlurPercentage(int blurPercentage);
+    private native int setBlurPercentage(int blurPercentage);
 
     /**
      * Set Blur Percentage to allow blur on detected Face
@@ -75,14 +75,14 @@ public class RecogEngine {
      * @param faceBlurPercentage is 0 to 100, 0 - clean face and 100 - Blurry face
      * @return 1 if success else 0
      */
-    public native int setFaceBlurPercentage(int faceBlurPercentage);
+    private native int setFaceBlurPercentage(int faceBlurPercentage);
 
     /**
-     * @param minPercentage
-     * @param maxPercentage
+     * @param minPercentage Min value
+     * @param maxPercentage Max value
      * @return 1 if success else 0
      */
-    public native int setGlarePercentage(int minPercentage, int maxPercentage);
+    private native int setGlarePercentage(int minPercentage, int maxPercentage);
 
     /**
      * set Hologram detection to allow hologram on face or not
@@ -90,7 +90,7 @@ public class RecogEngine {
      * @param isDetectHologram if true then reject hologram is on face else it is allow .
      * @return 1 if success else 0
      */
-    public native int setHologramDetection(boolean isDetectHologram);
+    private native int setHologramDetection(boolean isDetectHologram);
 
     /**
      * set light tolerance to detect light on document if low light
@@ -98,15 +98,16 @@ public class RecogEngine {
      * @param tolerance is 0 to 100, 0 - allow full dark document and 100 - allow full bright document
      * @return 1 if success else 0
      */
-    public native int setLowLightTolerance(int tolerance);
+    private native int setLowLightTolerance(int tolerance);
 
     /**
      * set motion threshold to detect motion on camera document
      *
-     * @param motionThreshold
-     * @return
+     * @param motionThreshold is 1 to 100, 1 means it allows 1% motion on document and 100 means it
+     *                            can not detect motion and allow document to scan.
+     * @return 1 if success else 0
      */
-    public native int setMotionThreshold(int motionThreshold);
+    private native int setMotionThreshold(int motionThreshold);
 
     public native int closeOCR(int i);
 
@@ -293,5 +294,18 @@ public class RecogEngine {
             result.SetResult(intData);
         }
         return ret;
+    }
+
+    /**
+     * Make sure call this function after initialized engine {@link #initEngine(Context, Activity)}
+     * Update data according to requirement
+     */
+    public void setFilter() {
+        setBlurPercentage(40);
+        setFaceBlurPercentage(40);
+        setGlarePercentage(5,90);
+        setLowLightTolerance(39);
+        setHologramDetection(true);
+        setMotionThreshold(15);
     }
 }
