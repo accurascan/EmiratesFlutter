@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:accuraemirates_example/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_version/get_version.dart';
 
 void main() {
   runApp(MyApp());
@@ -87,12 +88,25 @@ class _MyHomePageState extends State<MyHomePage> {
   var overlay_size;
   double myheight_camera_Live = 80;
   double mywidth_camera_Live = 300;
-
+  String _projectVersion = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-//
+    getprojectVersion();
+  }
+
+  getprojectVersion() async {
+    String projectVersion;
+// Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      projectVersion = await GetVersion.projectVersion;
+    } on PlatformException {
+      projectVersion = 'Failed to get project version.';
+    }
+    setState(() {
+      _projectVersion = projectVersion;
+    });
   }
 
   @override
@@ -149,6 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
+                Padding(padding: EdgeInsets.only(top: 10)),
+                Text(_projectVersion)
               ],
             ),
           ),
