@@ -164,13 +164,12 @@ BOOL ischeckMation;
         videoCamera.defaultFPS = 30;
         videoCamera.grayscaleMode = NO;
         videoCamera.rotateVideo = NO;
-        
-        
-        docrecog_scan_RecogEngine_setBlurPercentage(65);
-        docrecog_scan_RecogEngine_setGlarePercentage(8, 99);
+
+        docrecog_scan_RecogEngine_setBlurPercentage(55);
         docrecog_scan_RecogEngine_setFaceBlurPercentage(65);
+        docrecog_scan_RecogEngine_setGlarePercentage(8, 99);
         docrecog_scan_RecogEngine_setHologramDetection(1);
-        docrecog_scan_RecogEngine_setLowLightTolerance(39);
+        docrecog_scan_RecogEngine_setLowLightTolerance(40);
         docrecog_scan_RecogEngine_setMotionThreshold(15);
 
         
