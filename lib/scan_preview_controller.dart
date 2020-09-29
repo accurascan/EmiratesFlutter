@@ -18,8 +18,18 @@ class ScanPreviewController {
     print('start camera: $result');
   }
 
+  activitydoOnResume() async {
+    String result = await channel.invokeMethod('scan#activitydoOnResume');
+    print('activitydoOnResume: $result');
+  }
+
   stopCamera() async {
     String result = await channel.invokeMethod('scan#stopCamera');
     print('stop camera: $result');
+  }
+
+  activitypause() async {
+    String result = await channel.invokeMethod('scan#activitypause');
+    print('activitypause: $result');
   }
 }

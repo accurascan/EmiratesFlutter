@@ -51,6 +51,8 @@ import com.accurascan.accuraemirates.FocusManager;
 import com.accurascan.accuraemirates.FocusManager.Listener;
 import com.accurascan.accuraemirates.R;
 import com.accurascan.accuraemirates.camera.CameraHolder;
+import com.docrecog.scan.OCRCallback;
+import com.docrecog.scan.SensorsActivity;
 import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 import com.inet.facelock.callback.FaceLockHelper;
@@ -170,8 +172,8 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     Thread mCameraOpenThread = new Thread(new Runnable() {
         public void run() {
             try {
-//                mCameraDevice = Util.openCamera(getActivity(), mCameraId);
-                mCameraDevice = Camera.open();
+                mCameraDevice = Util.openCamera(mCameraId);
+//                mCameraDevice = Camera.open();
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 //                        requestPermissions(new String[]{Manifest.permission.CAMERA}, 1);
@@ -245,7 +247,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private SurfaceView surfaceView;
     private boolean isPreviewSet = false;
     private int frameCount = 0;
-    private String newMessage="";
+    private String newMessage = "";
 
     CameraActivity() {
         this.context = null;
@@ -529,6 +531,15 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "scan#startCamera":
+                break;
+            case "scan#activitydoOnResume":
+                doOnResume();
+                break;
+            case "scan#stopCamera":
+                closeCamera();
+                break;
+            case "scan#activitypause":
+                onPause();
                 break;
             case "facecrop":
                 facematch_resutl = result;
@@ -1475,12 +1486,11 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         }
     }
 
-    @Override
     protected void onPause() {
         if (LOGV) Log.e(TAG, "onPause");
 
         mOnResumePending = false;
-        if(isDone==true) {
+        if (isDone == true) {
             mPausing = true;
         }
         mIsAutoFocusCallback = false;
@@ -2150,7 +2160,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     @Override
     public void onUpdateProcess(final String s) {
         framemessage = s;
-
 
 
 //        Runnable runnable = new Runnable() {

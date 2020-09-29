@@ -132,10 +132,10 @@ public class Util {
         return ps;
     }
 
-    public static Camera openCamera(Activity activity, int cameraId)
+    public static Camera openCamera(int cameraId)
             throws Exception {
         // Check if device policy has disabled the camera.
-        if (!activity.isFinishing()) {
+//        if (!activity.isFinishing()) {
 //            DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
 //                    Context.DEVICE_POLICY_SERVICE);
 //            if (dpm.getCameraDisabled(null) == true) {
@@ -168,7 +168,7 @@ public class Util {
                 }
             }
             //just for build pass
-        }
+//        }
         throw new Exception(new RuntimeException("Should never get here"));
 
     }

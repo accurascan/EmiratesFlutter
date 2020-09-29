@@ -16,7 +16,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   List cameras;
   List cameras1;
   String imagePath;
@@ -64,6 +64,7 @@ class _CameraScreenState extends State<CameraScreen>
         duration: Duration(milliseconds: 2000), vsync: this);
 
     _updateRotations(true);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   Future<Null> _getLicense() async {
@@ -125,7 +126,18 @@ class _CameraScreenState extends State<CameraScreen>
   void dispose() {
     controller.stopCamera();
     controller = null;
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      controller.activitypause();
+    }
+    if (state == AppLifecycleState.resumed) {
+      controller.activitydoOnResume();
+    }
   }
 
   @override
@@ -238,12 +250,11 @@ class _CameraScreenState extends State<CameraScreen>
                               _leftRotation();
                             });
                           }
-                          print("length   : " + result_data.length.toString());
                           if ((result_data.length >= 19 ||
                                   result_data[0].length >= 19) &&
                               key == 'BackImage' &&
                               value != "") {
-                            Navigator.pop(context);
+                            Navigator.of(context).pop();
                             Navigator.push(
                               context,
                               new MaterialPageRoute(
