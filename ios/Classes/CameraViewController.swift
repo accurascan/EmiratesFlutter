@@ -85,7 +85,7 @@ public class CameraViewController: UIViewController{
         _channel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) in
             switch call.method{
             case "scan#startCamera":
-               // if self.isCheckFirstTime{
+                // if self.isCheckFirstTime{
                 self.startCamera()
                 //}
                 break;
@@ -95,12 +95,12 @@ public class CameraViewController: UIViewController{
             case "facecrop":
                 
                 guard let args = call.arguments else {
-                       result("iOS could not recognize flutter arguments in method: (sendParams)")
+                    result("iOS could not recognize flutter arguments in method: (sendParams)")
                     return
-                     }
+                }
                 
                 if let myArgs = args as? [String: Any]{
-                   let cameraimage = myArgs["cameraimage"] as? String
+                    let cameraimage = myArgs["cameraimage"] as? String
                     let cardfaceimage = myArgs["cardfaceimage"] as? String
                     print("cameraimage :- \(String(describing: cameraimage))")
                     print("cardfaceimage :- \(String(describing: cardfaceimage))")
@@ -114,7 +114,7 @@ public class CameraViewController: UIViewController{
                     if let decodedData = Data(base64Encoded: cardfaceimage!, options: .ignoreUnknownCharacters) {
                         let image = UIImage(data: decodedData)
                         self.faceImage = image
-                           //  print(self.faceImage as Any)
+                        //  print(self.faceImage as Any)
                     }
                     
                     
@@ -123,22 +123,22 @@ public class CameraViewController: UIViewController{
                 
                 
                 if self.camaraImage != nil{
-                var flippedImage: UIImage? = nil
-                if let CGImage = self.camaraImage?.cgImage {
-                    flippedImage = UIImage(cgImage: CGImage, scale: self.camaraImage!.scale, orientation: .right)
-                }
-                self.camaraImage = flippedImage!
-
-                let ratio = CGFloat(self.camaraImage!.size.width) / self.camaraImage!.size.height
-                self.camaraImage = self.compressimage(with: self.camaraImage, convertTo: CGSize(width: 600 * ratio, height: 600))!
-                
+                    var flippedImage: UIImage? = nil
+                    if let CGImage = self.camaraImage?.cgImage {
+                        flippedImage = UIImage(cgImage: CGImage, scale: self.camaraImage!.scale, orientation: .right)
+                    }
+                    self.camaraImage = flippedImage!
+                    
+                    let ratio = CGFloat(self.camaraImage!.size.width) / self.camaraImage!.size.height
+                    self.camaraImage = self.compressimage(with: self.camaraImage, convertTo: CGSize(width: 600 * ratio, height: 600))!
+                    
                     
                 }else{
-                     result("")
+                    result("")
                 }
                 
                 
-
+                
                 let fmInit = EngineWrapper.isEngineInit()
                 if !fmInit{
                     
@@ -155,10 +155,10 @@ public class CameraViewController: UIViewController{
                  */
                 let fmValue = EngineWrapper.getEngineInitValue() //get engineWrapper load status
                 print(fmValue)
-                 
+                
                 self.faceRegion = nil;
                 if (self.faceImage != nil){
-                
+                    
                     /*
                      Accura Face SDK method to detect user face from document image
                      Param: Document image
@@ -170,6 +170,7 @@ public class CameraViewController: UIViewController{
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                    var stFaceImage : String = String()
                     if (self.faceRegion != nil){
                         /*
                          Accura Face SDK method to detect user face from selfie or camera stream
@@ -181,27 +182,28 @@ public class CameraViewController: UIViewController{
                         let data = self.face2?.bound
                         
                         self.imageFace = self.resizeImage(image: self.camaraImage!, targetSize: data!)
+                        print(self.imageFace?.size)
                         
-                        
-                        let stFaceImage = self.convertImageToBase64String(img: self.imageFace!)
+                        if (self.imageFace?.size.width)! > 0 && (self.imageFace?.size.height)! > 0 {
+                            stFaceImage = self.convertImageToBase64String(img: self.imageFace!)}
                         /*
                          Accura Face SDK method to get face match score
                          Params: face image from document with user image from selfie or camera stream
                          Returns: face match score
                          */
-
-                            result(stFaceImage)
                         
-
+                        result(stFaceImage)
+                        
+                        
                     }
-
+                    
                 })
                 
                 
                 
-                     
-            
-//                print(call.arguments as Any)
+                
+                
+                //                print(call.arguments as Any)
                 break;
             case "facematch":
                 let fm_Score = EngineWrapper.identify(self.faceRegion?.feature, featurebuff2: self.face2?.feature)
@@ -230,7 +232,7 @@ public class CameraViewController: UIViewController{
         
         isFront = true
     }
-
+    
     
     func clearTempFolder(filename: String?) {
         let fileManager = FileManager.default
@@ -241,7 +243,7 @@ public class CameraViewController: UIViewController{
                 print(filePath)
                 let fileName = String(format: "%@", (filePath.components(separatedBy: "/").last!))
                 if fileName != filename{
-                   try fileManager.removeItem(atPath: tempFolderPath + filePath)
+                    try fileManager.removeItem(atPath: tempFolderPath + filePath)
                 }
             }
         } catch {
@@ -263,7 +265,7 @@ public class CameraViewController: UIViewController{
         super.init(coder: coder)!
     }
     
-   
+    
     
     func managePermission(){
         AVCaptureDevice.requestAccess(for: .video) { granted in
@@ -286,7 +288,7 @@ public class CameraViewController: UIViewController{
                 shortTap.numberOfTouchesRequired = 1
                 
                 
-             //   self.startCamera();
+                //   self.startCamera();
             } else {
                 print("Not granted access")
             }
@@ -392,7 +394,7 @@ extension CameraViewController: VideoCameraWrapperDelegate {
     public func onMessage(_ message: String!) {
         let data = NSMutableDictionary()
         data["message"] = message
-    
+        
         var dataArray: [NSMutableDictionary] = []
         dataArray.append(data)
         _messagingChannel.sendMessage(dataArray)
@@ -444,9 +446,9 @@ extension CameraViewController: VideoCameraWrapperDelegate {
         
         if self.dictFrontResult.count != 0 && self.dictBackResult.count != 0{
             if !self.isCheckCardBackFrint{
-//                self.isCheckCardBackFrint = true
-//                self.videoCameraWrapper?.stopCamera()
-//                imageView.image = nil
+                //                self.isCheckCardBackFrint = true
+                //                self.videoCameraWrapper?.stopCamera()
+                //                imageView.image = nil
                 
                 if UserDefaults.standard.value(forKey: "ScanningDataMRZ") != nil{
                     dictScanningData  = UserDefaults.standard.value(forKey: "ScanningDataMRZ") as! [String : String]  // Get UserDefaults Store Dictionary
@@ -468,8 +470,8 @@ extension CameraViewController: VideoCameraWrapperDelegate {
                 }
                 print("dictScanningData.count",dictScanningData.count)
                 for (key,value) in dictScanningData{
-                
-                
+                    
+                    
                     if key.contains("lines"){
                         data["MRZ"] = value
                     }
@@ -499,11 +501,11 @@ extension CameraViewController: VideoCameraWrapperDelegate {
                     }
                     if key.contains("birth"){
                         
-//                        let inputFormatter = DateFormatter()
-//                        inputFormatter.dateFormat = "yymmdd"
-//                        let showDate = inputFormatter.date(from: value)
-//                        inputFormatter.dateFormat = "dd-MM-yy"
-//                        let resultString = inputFormatter.string(from: showDate!)
+                        //                        let inputFormatter = DateFormatter()
+                        //                        inputFormatter.dateFormat = "yymmdd"
+                        //                        let showDate = inputFormatter.date(from: value)
+                        //                        inputFormatter.dateFormat = "dd-MM-yy"
+                        //                        let resultString = inputFormatter.string(from: showDate!)
                         data["birthDate"] = value
                     }
                     if key.contains("BirthChecksum"){
@@ -513,11 +515,11 @@ extension CameraViewController: VideoCameraWrapperDelegate {
                         data["expirationchecksum"] = value
                     }
                     if key.elementsEqual("expirationDate"){
-//                        let inputFormatter = DateFormatter()
-//                        inputFormatter.dateFormat = "yymmdd"
-//                        let showDate = inputFormatter.date(from: value)
-//                        inputFormatter.dateFormat = "dd-MM-yy"
-//                        let resultString = inputFormatter.string(from: showDate!)
+                        //                        let inputFormatter = DateFormatter()
+                        //                        inputFormatter.dateFormat = "yymmdd"
+                        //                        let showDate = inputFormatter.date(from: value)
+                        //                        inputFormatter.dateFormat = "dd-MM-yy"
+                        //                        let resultString = inputFormatter.string(from: showDate!)
                         data["expiryDate"] = value
                     }
                     if key.elementsEqual("personalNumber"){
@@ -537,28 +539,28 @@ extension CameraViewController: VideoCameraWrapperDelegate {
                         } else if value.contains("1"){
                             result = "Correct Mrz"
                         } else if value.contains("2") {
-                           result = "Incorrect Mrz"
+                            result = "Incorrect Mrz"
                         }
                         data["Result"] = result
-
-                                    
-                         
+                        
+                        
+                        
                     }
                 }
                 data["frontBitmap"] = convertImageToBase64String(img: imgViewCardFront!)
-                                           
-                                                        data["BackImage"] = convertImageToBase64String(img: imgViewCard!)
-                                                       
-                                       //                dictBackResult11.append(data as! [String : String])
-                                       //                dictBackResult11.append(dictBackResult)
-                                       //                dictBackResult11.append(dictScanningData)
-                                        print("data.count    :",data.count)
-                                                       var dataArray: [NSMutableDictionary] = []
-                                                       dataArray.append(data)
-                                        AudioServicesPlaySystemSound(1315)
-                                       print("dataArray.count    :",dataArray)
-                                       _messagingChannel.sendMessage(dataArray)
-
+                
+                data["BackImage"] = convertImageToBase64String(img: imgViewCard!)
+                
+                //                dictBackResult11.append(data as! [String : String])
+                //                dictBackResult11.append(dictBackResult)
+                //                dictBackResult11.append(dictScanningData)
+                print("data.count    :",data.count)
+                var dataArray: [NSMutableDictionary] = []
+                dataArray.append(data)
+                AudioServicesPlaySystemSound(1315)
+                print("dataArray.count    :",dataArray)
+                _messagingChannel.sendMessage(dataArray)
+                
                 
             }
         }else{
@@ -573,30 +575,33 @@ extension CameraViewController: VideoCameraWrapperDelegate {
     }
     
     
-     func resizeImage(image: UIImage, targetSize: CGRect) -> UIImage {
-         let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
-         var newX = targetSize.origin.x - (targetSize.size.width * 0.4)
-         var newY = targetSize.origin.y - (targetSize.size.height * 0.4)
-         var newWidth = targetSize.size.width * 1.8
-         var newHeight = targetSize.size.height * 1.8
-         if newX < 0 {
-             newX = 0
-         }
-         if newY < 0 {
-             newY = 0
-         }
-         if newX + newWidth > image.size.width{
-             newWidth = image.size.width - newX
-         }
-         if newY + newHeight > image.size.height{
-             newHeight = image.size.height - newY
-         }
-         // This is the rect that we've calculated out and this is what is actually used below
-         let rect = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
-         let imageRef: CGImage = contextImage.cgImage!.cropping(to: rect)!
-         let image1: UIImage = UIImage(cgImage: imageRef)
-         return image1
-     }
+    func resizeImage(image: UIImage, targetSize: CGRect) -> UIImage {
+        let contextImage: UIImage = UIImage(cgImage: image.cgImage!)
+        var newX = targetSize.origin.x - (targetSize.size.width * 0.4)
+        var newY = targetSize.origin.y - (targetSize.size.height * 0.4)
+        var newWidth = targetSize.size.width * 1.8
+        var newHeight = targetSize.size.height * 1.8
+        var image1 :UIImage=UIImage()
+        if newX < 0 {
+            newX = 0
+        }
+        if newY < 0 {
+            newY = 0
+        }
+        if newX + newWidth > image.size.width{
+            newWidth = image.size.width - newX
+        }
+        if newY + newHeight > image.size.height{
+            newHeight = image.size.height - newY
+        }
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+        if rect.width > 0 && rect.height > 0 {
+            let imageRef: CGImage = contextImage.cgImage!.cropping(to: rect)!
+            image1 = UIImage(cgImage: imageRef)
+        }
+        return image1
+    }
     
     
     
