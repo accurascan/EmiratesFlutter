@@ -125,9 +125,9 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   void dispose() {
     controller.stopCamera();
-    controller = null;
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    controller = null;
   }
 
   @override
@@ -363,30 +363,8 @@ class _CameraScreenState extends State<CameraScreen>
             tween: ConstantTween<double>(rotateToLeft ? (-pi) : (pi)),
             weight: 50.0,
           ),
-//          TweenSequenceItem<double>(
-//            tween: ConstantTween<double>(rotateToLeft ? (-pi / 2) : (pi / 2)),
-//            weight: 50.0,
-//          ),
-//          TweenSequenceItem<double>(
-//            tween: Tween(begin: 0.0, end: rotateToLeft ? (pi / 2) : (-pi / 2))
-//                .chain(CurveTween(curve: Curves.linear)),
-//            weight: 50.0,
-//          ),
         ],
       ).animate(controller_anim);
-//      _backRotation = TweenSequence(
-//        <TweenSequenceItem<double>>[
-//          TweenSequenceItem<double>(
-//            tween: ConstantTween<double>(rotateToLeft ? (pi / 2) : (-pi / 2)),
-//            weight: 50.0,
-//          ),
-//          TweenSequenceItem<double>(
-//            tween: Tween(begin: rotateToLeft ? (-pi / 2) : (pi / 2), end: 0.0)
-//                .chain(CurveTween(curve: Curves.linear)),
-//            weight: 50.0,
-//          ),
-//        ],
-//      ).animate(controller_anim);
     });
   }
 }

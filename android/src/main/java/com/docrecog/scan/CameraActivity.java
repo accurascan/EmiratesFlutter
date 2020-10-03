@@ -129,7 +129,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
     private static final long VIBRATE_DURATION = 200L;
-    private static boolean LOGV = false;
+    private static boolean LOGV = true;
     private static RecogEngine mCardScanner;
     private static int mRecCnt = 0; //counter for mrz detecting
     private Context mContext = null;
@@ -296,7 +296,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
          */
         mCameraOpenThread.start();
 
-        mCameraPreview = new CameraPreview(this.context, mCameraDevice);
+        mCameraPreview = new CameraPreview(CameraActivity.this,this.context, mCameraDevice);
         mCameraPreview.setOnTouchListener(CameraActivity.this);
 
         SurfaceHolder holder = mCameraPreview.getHolder();
@@ -412,27 +412,27 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-//        mbVibrate = true;
-//        if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
-//        if (mCameraDevice == null) {// && isKeyguardLocked()) {
-//            if (LOGV) Log.v(TAG, "onResume. mOnResumePending=true");
-//            if (hasWindowFocus()) {
-//                doOnResume();
-//            } else
-//                mOnResumePending = true;
-//        } else {
-//            if (LOGV) Log.v(TAG, "onResume. mOnResumePending=false");
-//            int currentSDKVersion = Build.VERSION.SDK_INT;
-//
-//            doOnResume();
-//
-//
-//            mOnResumePending = false;
-//        }
+    protected void onResume() {
+//        super.onResume();
+
+        mbVibrate = true;
+        if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
+        if (mCameraDevice == null) {// && isKeyguardLocked()) {
+            if (LOGV) Log.v(TAG, "onResume. mOnResumePending=true");
+            if (hasWindowFocus()) {
+                doOnResume();
+            } else
+                mOnResumePending = true;
+        } else {
+            if (LOGV) Log.v(TAG, "onResume. mOnResumePending=false");
+            int currentSDKVersion = Build.VERSION.SDK_INT;
+
+            doOnResume();
+
+
+            mOnResumePending = false;
+        }
     }
 
     protected void doOnResume() {
@@ -447,8 +447,8 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
             try {
-//                mCameraDevice = Util.openCamera(getActivity(), mCameraId);
-                mCameraDevice = Camera.open();
+                mCameraDevice = Util.openCamera(mCameraId);
+//                mCameraDevice = Camera.open();
                 initializeCapabilities();
                 startPreview();
             } catch (Exception e) {
@@ -1601,23 +1601,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     }
 
     private void drawOverlay() {
-        //draw white rectangle frame according to templete image aspect ratio
-//        int panWidth = 465;
-//        int panHeight= 296;
-        int panWidth = (int) 300;
-        imgheight = 191;
-        int panHeight = imgheight;
-//        float proportion = (float) panHeight / (float) panWidth;
-//        if (proportion < 0.64) {
-//            proportion = proportion + 0.03f;
-//        }
-//
-//        int width = (int) ((dm.widthPixels * 5) / (float) 5.6f);
-//        int height = (int) (width / 1.69f);
-//
-//        rectH = (int) height;
-//        rectW = (int) width;
-
+        //draw red rectangle frame according to templete image aspect ratio
 
         float proportion = 0.636666667f;
         int width = (int) ((dm.widthPixels * 5) / (float) 5.6f);
@@ -1835,7 +1819,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         if (LOGV)
             Log.e(TAG, "Preview size is " + optimalSize.width + "x"
                     + optimalSize.height);
-
+        previewSize = new Size(optimalSize.width,optimalSize.height);
         String previewSize = "";
         previewSize = "[" + optimalSize.width + "x" + optimalSize.height + "]";
 //        mPreviewSizeView.setText(previewSize);
@@ -1886,6 +1870,14 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         }
 
     }
+
+    /**
+     * Returns the preview size that is currently in use by the underlying camera.
+     */
+    public Size getPreviewSize() {
+        return previewSize;
+    }
+
 
     public void GetCameraResolution() {
         if (mParameters != null && !isBlurSet) {

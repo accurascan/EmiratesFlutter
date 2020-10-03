@@ -22,8 +22,7 @@ class ScanPreviewWidget extends StatefulWidget {
   ScanPreviewWidgetState createState() => ScanPreviewWidgetState();
 }
 
-class ScanPreviewWidgetState extends State<ScanPreviewWidget>
-    with WidgetsBindingObserver {
+class ScanPreviewWidgetState extends State<ScanPreviewWidget> {
   ScanPreviewController controller;
 
   final BasicMessageChannel _messageChannel =
@@ -32,7 +31,6 @@ class ScanPreviewWidgetState extends State<ScanPreviewWidget>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _messageChannel.setMessageHandler(_messageHandler);
   }
 
@@ -42,18 +40,19 @@ class ScanPreviewWidgetState extends State<ScanPreviewWidget>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    // controller.stopCamera();
+    // WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      controller.startCamera();
-    } else if (state == AppLifecycleState.paused) {
-      controller.stopCamera();
-    }
-  }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (state == AppLifecycleState.resumed) {
+  //     controller.startCamera();
+  //   } else if (state == AppLifecycleState.paused) {
+  //     controller.stopCamera();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
