@@ -1379,8 +1379,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 //            intent.putExtra("ocrData", application);
 //            startActivityForResult(intent, 101);
             mCardScanner.closeOCR(0);
-
-            playEffect();
         }
     }
 
@@ -1701,12 +1699,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                     = new Animator.AnimatorListener() {
 
                 public void onAnimationStart(Animator animation) {
-                    try {
-//                        mFlipImage.setVisibility(View.VISIBLE);
-                        playEffect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
 
                 public void onAnimationRepeat(Animator animation) {
@@ -2040,19 +2032,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     private boolean isCameraIdle() {
         return (mCameraState == IDLE || mFocusManager.isFocusCompleted());
-    }
-
-    void playEffect() {
-        if (audioManager != null)
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-        mediaPlayer.start();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer1) {
-//                mediaPlayer.stop();
-//                mediaPlayer.release();
-            }
-        });
     }
 
     //requesting the camera permission
