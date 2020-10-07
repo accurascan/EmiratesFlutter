@@ -109,14 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
               if (status.isDenied) {
                 Toast.show('camera permission denied', context);
               } else {
-                status = await Permission.storage.request();
-                if (status.isDenied) {
-                  Toast.show('storage permission denied', context);
-                  
-                } else {
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CameraScreen()));
-                }
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CameraScreen()));
               }
           },
           child: Container(
