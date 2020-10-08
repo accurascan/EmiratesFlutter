@@ -128,7 +128,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private static final int UPDATE_PARAM_INITIALIZE = 1;
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
-    private static final long VIBRATE_DURATION = 200L;
     private static boolean LOGV = true;
     private static RecogEngine mCardScanner;
     private static int mRecCnt = 0; //counter for mrz detecting
