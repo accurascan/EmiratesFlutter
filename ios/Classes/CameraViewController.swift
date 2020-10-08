@@ -340,7 +340,10 @@ public class CameraViewController: UIViewController{
         let filepathAlt = Bundle.main.path(forResource: "haarcascade_frontalface_alt", ofType: "xml")
         
         videoCameraWrapper = VideoCameraWrapper.init(delegate: self, andImageView: imageView, andFacePath: filepathAlt)
+        imageView.setImageToCenter()
     }
+    
+    
     
     @objc private func ChangedOrientation() {
         var width: CGFloat = 0.0
@@ -611,4 +614,14 @@ extension CameraViewController: VideoCameraWrapperDelegate {
         return imgString
     }
     
+}
+
+extension UIImageView {
+    func setImageToCenter() {
+        let imageSize = self.image?.size
+        self.sizeThatFits(imageSize ?? CGSize.zero)
+        var imageViewCenter = self.center
+        imageViewCenter.x = self.frame.midX
+        self.center = imageViewCenter
+    }
 }
