@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
 
 import io.flutter.plugin.common.MethodChannel;
 
-public class FaceMatch {
+public class FaceMatch implements FaceCallback {
     private final Context class_context;
     private MethodChannel.Result facematch_resutl;
     public static Bitmap face2;
@@ -50,7 +50,7 @@ public class FaceMatch {
         face1 = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         class_context=context;
 
-//        initEngine();
+        initEngine();
 
         image1 = new MyView(class_context);  //initialize the view of front image
         image2 = new MyView(class_context);
@@ -61,6 +61,57 @@ public class FaceMatch {
         facematch(file);
     }
 
+    public String getPackageName() {
+        return class_context.getPackageName();
+    }
+
+    private void initEngine() {
+
+        //call Sdk  method InitEngine
+        // parameter to pass : FaceCallback callback, int fmin, int fmax, float resizeRate, String modelpath, String weightpath, AssetManager assets
+        // this method will return the integer value
+        //  the return value by initEngine used the identify the particular error
+        // -1 - No key found
+        // -2 - Invalid Key
+        // -3 - Invalid Platform
+        // -4 - Invalid License
+
+        writeFileToPrivateStorage(R.raw.model, "model.prototxt"); //write file to private storage
+        File modelFile = class_context.getApplicationContext().getFileStreamPath("model.prototxt");
+        String pathModel = modelFile.getPath();
+        writeFileToPrivateStorage(R.raw.weight, "weight.dat");
+        File weightFile = class_context.getApplicationContext().getFileStreamPath("weight.dat");
+        String pathWeight = weightFile.getPath();
+
+        int nRet = FaceLockHelper.InitEngine(FaceMatch.this, 30, 800, 1.18f, pathModel, pathWeight,class_context.getAssets());
+        Log.i("ViewDataActivityTEMP", "InitEngine: " + nRet);
+        if (nRet < 0) {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(class_context);
+            if (nRet == -1) {
+                builder1.setMessage("No Key Found");
+            } else if (nRet == -2) {
+                builder1.setMessage("Invalid Key");
+            } else if (nRet == -3) {
+                builder1.setMessage("Invalid Platform");
+            } else if (nRet == -4) {
+                builder1.setMessage("Invalid License");
+            }
+
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+
+                        }
+                    });
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }
+    }
 
     public void facematch(File f) {
         String filename = f.getName();
@@ -211,6 +262,63 @@ public class FaceMatch {
             width = (int) (height * bitmapRatio);
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    @Override
+    public void onInitEngine(int ret) {
+    }
+
+
+    // call if face detect
+    @Override
+    public void onLeftDetect(FaceDetectionResult faceResult) {
+        leftResult = null;
+        if (faceResult != null) {
+            leftResult = faceResult;
+
+            if (FaceMatch.face2 != null && !FaceMatch.face2.isRecycled()) {
+                Bitmap nBmp = FaceMatch.face2.copy(Bitmap.Config.ARGB_8888, true);
+                if (nBmp != null && !nBmp.isRecycled()) {
+                    int w = nBmp.getWidth();
+                    int h = nBmp.getHeight();
+                    int s = (w * 32 + 31) / 32 * 4;
+                    ByteBuffer buff = ByteBuffer.allocate(s * h);
+                    nBmp.copyPixelsToBuffer(buff);
+                    if (leftResult != null) {
+                        FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature());
+                    } else {
+                        FaceLockHelper.DetectRightFace(buff.array(), w, h, null);
+                    }
+                    CameraActivity.leftResult = leftResult;
+                }
+            }
+        }
+    }
+
+    //call if face detect
+    @Override
+    public void onRightDetect(FaceDetectionResult faceResult) {
+
+        if (faceResult != null) {
+            rightResult = faceResult;
+            Bitmap facecrop = rightResult.getFaceImage(FaceMatch.face2);
+            CameraActivity.rightResult = rightResult;
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            facecrop.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            String BackImageencoded = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            CameraActivity.facematch_resutl.success(BackImageencoded);
+            faceResult_match = true;
+        } else {
+            rightResult = null;
+            CameraActivity.rightResult = rightResult;
+            CameraActivity.facematch_resutl.success("0.0");
+            faceResult_match = false;
+        }
+    }
+
+    @Override
+    public void onExtractInit(int ret) {
     }
 
     //Calculate Pan and Adhare facematch score

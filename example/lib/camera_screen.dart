@@ -31,8 +31,6 @@ class _CameraScreenState extends State<CameraScreen>
 
   int back = 1;
 
-  bool _isDetecting = false;
-
   bool done = false;
 
   AnimationController controller_anim;
@@ -207,8 +205,6 @@ class _CameraScreenState extends State<CameraScreen>
                         element.forEach((key, value) {
                           if (key == 'message') {
                             setState(() {
-                              _isDetecting = false;
-
                               switch (value) {
                                 case "0":
                                   toast = "Keep Document Steady";
