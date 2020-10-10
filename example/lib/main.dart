@@ -4,6 +4,8 @@ import 'package:accuraemirates_example/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_version/get_version.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:toast/toast.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,23 +14,10 @@ void main() {
 MethodChannel platform = MethodChannel('buildflutter.com/platform');
 
 class MyApp extends StatelessWidget {
-  Map<int, Color> color = {
-    50: Color.fromRGBO(4, 131, 184, .1),
-    100: Color.fromRGBO(4, 131, 184, .2),
-    200: Color.fromRGBO(4, 131, 184, .3),
-    300: Color.fromRGBO(4, 131, 184, .4),
-    400: Color.fromRGBO(4, 131, 184, .5),
-    500: Color.fromRGBO(4, 131, 184, .6),
-    600: Color.fromRGBO(4, 131, 184, .7),
-    700: Color.fromRGBO(4, 131, 184, .8),
-    800: Color.fromRGBO(4, 131, 184, .9),
-    900: Color.fromRGBO(4, 131, 184, 1),
-  };
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MaterialColor colorCustom = MaterialColor(0xFF880E4F, color);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -85,7 +74,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   File temostor;
 
-  var overlay_size;
   double myheight_camera_Live = 80;
   double mywidth_camera_Live = 300;
   String _projectVersion = '';
@@ -117,8 +105,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: GestureDetector(
           onTap: () async {
-            Navigator.push(context,
-                new MaterialPageRoute(builder: (context) => CameraScreen()));
+            PermissionStatus status = await Permission.camera.request();
+              if (status.isDenied) {
+                Toast.show('camera permission denied', context);
+              } else {
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CameraScreen()));
+              }
           },
           child: Container(
             margin: EdgeInsets.only(top: 40.0, bottom: 40.0),

@@ -24,7 +24,7 @@ A new Flutter plugin.
   s.xcconfig = {
     'OTHER_LDFLAGS' => '-framework opencv2 -lc++ -lAccuraFace -lAccuraEmirate -lz',
     'USER_HEADER_SEARCH_PATHS' => '"${PROJECT_DIR}/.."/**',
-    "LIBRARY_SEARCH_PATHS" => '"${PROJECT_DIR}/.."/**',
+    "LIBRARY_SEARCH_PATHS" => '"${PROJECT_DIR}/.symlinks/plugins/accuraemirates/ios/Classes/.."/**',
   }
   s.vendored_frameworks = 'opencv2.framework', "CoreVideo.framework", "Foundation.framework", "CoreGrpahics.framework",
   "Accelerate.framework", "CoreMedia.framework", "CoreImage.framework", "QuartzCore.framework", "AudioToolbox.framework",

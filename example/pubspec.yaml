@@ -41,6 +41,7 @@ dependencies:
   mailer2:
   flutter_mailer:
   get_version:
+  permission_handler: 5.0.1+1
 
 dev_dependencies:
   flutter_test:
