@@ -243,7 +243,7 @@ class _CameraScreenState extends State<CameraScreen>
                             });
                           }
                           if (key == 'front' && value == "done") {
-                            setState(() async {
+                            setState(() {
                               animimage_visible = true;
                               side_message =
                                   "Scan Back side of Emirates National ID";

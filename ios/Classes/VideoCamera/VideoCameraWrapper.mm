@@ -470,12 +470,28 @@ cv::Mat cvMatFromUIImage(UIImage* image)
 }
 
 -(void) Recog_MRZ:(cv::Mat&)mrzImg{
-    CFTimeInterval tf = CACurrentMediaTime();
-    cv::Mat splits[4];
-    cv::split(mrzImg, splits);
-    
+//    CFTimeInterval tf = CACurrentMediaTime();
+//    cv::Mat splits[4];
+//    cv::split(mrzImg, splits);
+//
+//    int w = mrzImg.cols;
+//    int h = mrzImg.rows;
     int w = mrzImg.cols;
-    int h = mrzImg.rows;
+        int h = mrzImg.rows;
+        int sw = 1200;
+        float scale = (float)w/(float)h;
+        //            float fscalex = (float)sw / (float)_matOrg.cols;// src_pix->w);
+        //            int sh = ((int)(_matOrg.rows*fscalex * 8 + 31) / 32) * 4;
+        int sh = sw/(float)scale;
+        cv::Mat splits[4];
+        cv::Mat cpmat, frameMat;
+        mrzImg.copyTo(frameMat);
+        cv::resize(frameMat, frameMat, cv::Size(sw,sh));
+        cv::split(frameMat, splits);
+        frameMat.release();
+        mrzImg.copyTo(cpmat);
+
+
     
     char chsurname[100],chgivenname[100];
     char chlines[100];
@@ -515,10 +531,10 @@ cv::Mat cvMatFromUIImage(UIImage* image)
         [self.delegate onMessage: @"3"];
     });
     
-    retval = doRecogGrayImg_Passport(splits[2].data, splits[1].data, splits[0].data, w, h, chlines, success, chtype, chcountry, chsurname, chgivenname, chpassportnumber, chpassportchecksum, chnationality, chbirth, chbirthchecksum,chsex, chexpirationdate, chexpirationchecksum, chpersonalnumber, chpersonalnumberchecksum, chsecondrowchecksum,chplaceofbirth,chplaceofissue, photoChannels[0], photoChannels[1], photoChannels[2],&phoW, &phoH, bPickPhoto,(char*)[path UTF8String]);
+    retval = doRecogGrayImg_Passport(splits[2].data, splits[1].data, splits[0].data, sw, sh, chlines, success, chtype, chcountry, chsurname, chgivenname, chpassportnumber, chpassportchecksum, chnationality, chbirth, chbirthchecksum,chsex, chexpirationdate, chexpirationchecksum, chpersonalnumber, chpersonalnumberchecksum, chsecondrowchecksum,chplaceofbirth,chplaceofissue, photoChannels[0], photoChannels[1], photoChannels[2],&phoW, &phoH, bPickPhoto,(char*)[path UTF8String]);
     
-    tf = CACurrentMediaTime() - tf;
-    NSLog(@"recogend %f",tf);
+//    tf = CACurrentMediaTime() - tf;
+//    NSLog(@"recogend %f",tf);
     if(success == true)
     {
         isCheckMSG = false;
