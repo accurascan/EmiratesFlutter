@@ -383,7 +383,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
 //        mRecCnt = 0;
 //        gotmrz = -1;
-        g_recogResult = new RecogResult();
+        g_recogResult = new com.docrecog.scan.RecogResult();
 //            mScanTitle.setText("Scan Front Side of " + RecogEngine.getCardname());
         SetFrontTemplete();
         isDone = false;
@@ -990,7 +990,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                             byte[] byteArray = byteArrayOutputStream.toByteArray();
                             String frontBitmapencoded = Base64.encodeToString(byteArray, Base64.NO_WRAP);
 
-
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
                             prodHashMap.put("frontBitmap", frontBitmapencoded);
                             list.add(prodHashMap);
@@ -1074,7 +1073,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                                 String Document = g_recogResult.docType;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
-                                prodHashMap.put("Document", Document);
+                                prodHashMap.put("docType", Document);
                                 list.add(prodHashMap);
 
 
@@ -1810,7 +1809,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         if (LOGV)
             Log.e(TAG, "Preview size is " + optimalSize.width + "x"
                     + optimalSize.height);
-        previewSize = new Size(optimalSize.width,optimalSize.height);
+        previewSize = new Size(optimalSize.width, optimalSize.height);
         String previewSize = "";
         previewSize = "[" + optimalSize.width + "x" + optimalSize.height + "]";
 //        mPreviewSizeView.setText(previewSize);

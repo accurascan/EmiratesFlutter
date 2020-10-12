@@ -479,7 +479,7 @@ extension CameraViewController: VideoCameraWrapperDelegate {
                         data["MRZ"] = value
                     }
                     if key.contains("passportType"){
-                        data["Document"] = value
+                        data["docType"] = value
                     }
                     if key.contains("surName"){
                         data["surname"] = value

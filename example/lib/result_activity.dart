@@ -130,7 +130,7 @@ class _result_activityState extends State<result_activity> {
             MRZ = value.toString();
           });
         }
-        if (key == 'Document') {
+        if (key == 'docType') {
           setState(() {
             Document1 = value.toString();
           });
@@ -274,23 +274,28 @@ class _result_activityState extends State<result_activity> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(bottom: 20),
+                                  margin: EdgeInsets.only(bottom: 10),
                                   child: Visibility(
                                     visible: match_score_visiblity,
                                     child: Container(
+                                      padding: EdgeInsets.all(7),
+                                      decoration: new BoxDecoration(
+                                          color: Color(
+                                              0xFFD32D39), //new Color.fromRGBO(255, 0, 0, 0.0),
+                                          borderRadius: new BorderRadius.all(
+                                              const Radius.circular(10.0))),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        // mainAxisAlignment:
+                                        //     MainAxisAlignment.,
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Container(
                                             padding: EdgeInsets.all(5),
                                             child: Text(
-                                              "Match Score : " +
-                                                  match_score +
-                                                  " %",
+                                              "FACEMATCH SCORE : " +
+                                                  match_score,
                                               style: TextStyle(
-                                                  color: Color(0xFFD32D39),
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: fontsize),
                                             ),
@@ -353,6 +358,42 @@ class _result_activityState extends State<result_activity> {
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
                                                 child: Text(MRZ,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: fontsize)),
+                                              ),
+                                            ),
+                                          ),
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                child: Text('DOCUMENT',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: fontsize)),
+                                              ),
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                child: Text(Document1,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -443,7 +484,7 @@ class _result_activityState extends State<result_activity> {
                                               alignment: Alignment.center,
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
-                                                child: Text('DOC NUMBER',
+                                                child: Text('DOCUMENT NO',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -479,7 +520,8 @@ class _result_activityState extends State<result_activity> {
                                               alignment: Alignment.center,
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
-                                                child: Text('DOC CHECKSUM',
+                                                child: Text(
+                                                    'DOCUMENT CHECK NUMBER',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -659,7 +701,8 @@ class _result_activityState extends State<result_activity> {
                                               alignment: Alignment.center,
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
-                                                child: Text('BIRTH CHECKSUM',
+                                                child: Text(
+                                                    'BIRTH CHECK NUMBER',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -691,45 +734,11 @@ class _result_activityState extends State<result_activity> {
                                             verticalAlignment:
                                                 TableCellVerticalAlignment
                                                     .middle,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.all(10),
-                                              child: Text('EXPIRATON CHECKSUM',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: fontsize)),
-                                            ),
-                                          ),
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
-                                                child: Text(expirationchecksum,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: fontsize)),
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                        TableRow(children: [
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Container(
-                                                padding: EdgeInsets.all(10),
-                                                child: Text('EXPIRY DATE',
+                                                child: Text('DATE OF EXPIRY ',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -747,6 +756,41 @@ class _result_activityState extends State<result_activity> {
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
                                                 child: Text(expiryDate,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: fontsize)),
+                                              ),
+                                            ),
+                                          ),
+                                        ]),
+                                        TableRow(children: [
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.all(10),
+                                              child: Text(
+                                                  'EXPIRATON CHECK NUMBER',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: fontsize)),
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                child: Text(expirationchecksum,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -801,7 +845,7 @@ class _result_activityState extends State<result_activity> {
                                               alignment: Alignment.center,
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
-                                                child: Text('OTHER ID CHECKSUM',
+                                                child: Text('OTHER ID CHECK',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -838,7 +882,7 @@ class _result_activityState extends State<result_activity> {
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
                                                 child: Text(
-                                                    'SECOND ROW CHECKSUM',
+                                                    'SECOND ROW CHECKSUM NO',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
@@ -856,42 +900,6 @@ class _result_activityState extends State<result_activity> {
                                               child: Container(
                                                 padding: EdgeInsets.all(10),
                                                 child: Text(secondrowchecksum,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: fontsize)),
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                        TableRow(children: [
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Container(
-                                                padding: EdgeInsets.all(10),
-                                                child: Text('RESULT',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: fontsize)),
-                                              ),
-                                            ),
-                                          ),
-                                          TableCell(
-                                            verticalAlignment:
-                                                TableCellVerticalAlignment
-                                                    .middle,
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Container(
-                                                padding: EdgeInsets.all(10),
-                                                child: Text(Result,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontWeight:
