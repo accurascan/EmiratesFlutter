@@ -687,9 +687,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 mRecCnt++;
                             } else {
                                 // bright front image for make face more bright
-                                Bitmap bitmap = brightImage(bmCard);
-                                frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bitmap, doblurcheck);
-//                            frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bmCard, doblurcheck);
+//                                Bitmap bitmap = brightImage(bmCard);
+//                                frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bitmap, doblurcheck);
+                            frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bmCard, doblurcheck);
                             }
                         }
 
@@ -841,7 +841,8 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                             RecogEngine.setFrontimage(image);
                         }
                         if (RecogEngine.getBackData() == null) {
-                            flipImage();
+//                            flipImage();
+                            playEffect();
                             SetBackTemplete();
                             list = new ArrayList<>();
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
@@ -857,7 +858,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                         if (RecogEngine.getFrontData() == null) {
 
-                            flipImage();
+//                            flipImage();
                             //set back image templete
                             SetFrontTemplete();
 
@@ -1283,7 +1284,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
         @Override
         protected void onPostExecute(String result) {
-            messageChannel.send(list);
+//            messageChannel.send(list);
             // You might want to change "executed" for the returned string
             // passed into onPostExecute(), but that is up to you
         }
@@ -1377,6 +1378,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 //            intent.putExtra("ocrData", application);
 //            startActivityForResult(intent, 101);
             mCardScanner.closeOCR(0);
+            playEffect();
         }
     }
 
@@ -2030,6 +2032,19 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     private boolean isCameraIdle() {
         return (mCameraState == IDLE || mFocusManager.isFocusCompleted());
+    }
+
+    void playEffect() {
+        if (audioManager != null)
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
+        mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer1) {
+                //mediaPlayer.stop();
+                //mediaPlayer.release();
+            }
+        });
     }
 
     //requesting the camera permission

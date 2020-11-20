@@ -238,8 +238,12 @@ class _CameraScreenState extends State<CameraScreen>
                               }
                             });
                           }
-                          if (key == 'front' && value == "done") {
+                          if (key == 'front' &&
+                              value == "done" &&
+                              side_message !=
+                                  "Scan Back side of Emirates National ID") {
                             setState(() {
+                              print("frontdone");
                               animimage_visible = true;
                               side_message =
                                   "Scan Back side of Emirates National ID";

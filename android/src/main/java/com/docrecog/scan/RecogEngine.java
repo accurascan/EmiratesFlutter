@@ -177,7 +177,7 @@ public class RecogEngine {
         int ret = loadDictionary(context, pDic, pDicLen, pDic1, pDicLen1/*,sLicenseKey.getBytes()*/, context.getAssets());
         Log.i("recogPassport", "loadDictionary: " + ret);
         if (ret < 0) {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(activity);
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
             if (ret == -1) {
                 builder1.setMessage("No Key Found");
             } else if (ret == -2) {
@@ -302,7 +302,7 @@ public class RecogEngine {
      */
     public void setFilter() {
         setBlurPercentage(40);
-        setFaceBlurPercentage(40);
+        setFaceBlurPercentage(99);
         setGlarePercentage(5,90);
         setLowLightTolerance(39);
         setHologramDetection(true);
