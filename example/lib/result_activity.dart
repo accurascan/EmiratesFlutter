@@ -100,9 +100,7 @@ class _result_activityState extends State<result_activity> {
 
   @override
   Widget build(BuildContext context) {
-    pr = ProgressDialog(
-      context,
-    );
+    pr = ProgressDialog(context, isDismissible: false);
     pr.style(
 //      message: 'Downloading file...',
       message: 'Please wait....',
@@ -280,8 +278,8 @@ class _result_activityState extends State<result_activity> {
                                     child: Container(
                                       padding: EdgeInsets.all(7),
                                       decoration: new BoxDecoration(
-                                          color: Color(
-                                              0xFFD32D39), //new Color.fromRGBO(255, 0, 0, 0.0),
+                                          color: Color(0xFFD32D39),
+                                          //new Color.fromRGBO(255, 0, 0, 0.0),
                                           borderRadius: new BorderRadius.all(
                                               const Radius.circular(10.0))),
                                       child: Row(
@@ -1043,6 +1041,8 @@ class _result_activityState extends State<result_activity> {
                           pr.hide();
                           Toast.show("Please, Try again", context);
                         }
+                      } else {
+                        pr.hide();
                       }
                     },
                     child: Container(
