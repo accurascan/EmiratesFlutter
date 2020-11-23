@@ -50,7 +50,7 @@ class _CameraScreenState extends State<CameraScreen>
   var toast = "";
   var side_message = "Scan Front side of Emirates National ID";
 
-  List<dynamic> result_data;
+  // List<dynamic> result_data;
 
   AppBar appBar;
 
@@ -199,6 +199,7 @@ class _CameraScreenState extends State<CameraScreen>
                       controller.startCamera();
                     },
                     onScanResult: (result) {
+                      List<dynamic> result_data;
                       result_data = result as List<dynamic>;
 
                       result_data.forEach((element) {
@@ -250,6 +251,7 @@ class _CameraScreenState extends State<CameraScreen>
                               _leftRotation();
                             });
                           }
+
                           if ((result_data.length >= 19 ||
                                   result_data[0].length >= 19) &&
                               key == 'BackImage' &&

@@ -302,7 +302,7 @@ public class RecogEngine {
      */
     public void setFilter() {
         setBlurPercentage(40);
-        setFaceBlurPercentage(99);
+        setFaceBlurPercentage(50);
         setGlarePercentage(5,90);
         setLowLightTolerance(39);
         setHologramDetection(true);

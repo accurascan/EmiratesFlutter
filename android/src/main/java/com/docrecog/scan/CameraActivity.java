@@ -35,7 +35,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -80,7 +79,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.MethodCall;
@@ -150,7 +148,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     MediaPlayer mediaPlayer = null;
     AudioManager audioManager = null;
 
-    final Handler mHandler = new Handler();
+    final Handler mHandler = new MainHandler();
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
     private final AutoFocusCallback mAutoFocusCallback = new AutoFocusCallback();
     protected Camera mCameraDevice;
@@ -172,12 +170,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         public void run() {
             try {
                 mCameraDevice = Util.openCamera(mCameraId);
-//                mCameraDevice = Camera.open();
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                        requestPermissions(new String[]{Manifest.permission.CAMERA}, 1);
-//                    }
-//                }
             } catch (Exception e) {
 //                mOpenCameraFail = true;
 //                mCameraDisabled = true;
@@ -190,11 +182,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     // When setCameraParametersWhenIdle() is called, we accumulate the subsets
     // needed to be updated in mUpdateSet.
     private int mUpdateSet;
-    private View mPreviewFrame;
-    RelativeLayout rel_main;// Preview frame area for SurfaceView.
-    /*private TextView mModeView, mPreviewSizeView, mPictureSizeView;*/
     private boolean mbVibrate;
-    private Dialog dialog;
     // The display rotation in degrees. This is only valid when mCameraState is
     // not PREVIEW_STOPPED.
     private int mDisplayRotation;
@@ -217,28 +205,20 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private boolean isback = false;
     private String cardside = "Front";
     private int cardpos = 0;
-    private int checkmrz = 0; //0 ideal 1 not require 2 require
     private int gotmrz = -1;
     private boolean isDone = false;
-    private boolean isBackPressed = false;
 
-    View rel_left, rel_right;
-    int imgheight;
     private int rectW, rectH;
     DisplayMetrics dm;
     private int titleBarHeight = 0;
     private boolean doblurcheck = false;
     private boolean isBlurSet = false;
-    private int ans;
     private String[][] Frontdata;
     private String[][] Backdata;
-    private String framemessage;
 
-    //    private Camera mCamera;
     private CameraPreview mCameraPreview;
     private Bitmap face1;
     public static MethodChannel.Result facematch_resutl;
-    public static MethodChannel.Result facematch_resutl_match;
     public static FaceDetectionResult leftResult = null;
     public static FaceDetectionResult rightResult = null;
     float match_score = 0.0f;
@@ -247,23 +227,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private boolean isPreviewSet = false;
     private int frameCount = 0;
     private String newMessage = "";
-
-    CameraActivity() {
-        this.context = null;
-        this.registrar = null;
-        this.activity = null;
-        this.cameraid = 0;
-    }
-
-    private Camera getCameraInstance() {
-        Camera camera = null;
-        try {
-            camera = Camera.open();
-        } catch (Exception e) {
-            // cannot get camera or does not exist
-        }
-        return camera;
-    }
 
     @Override
     public void configureFlutterEngine(FlutterEngine flutterEngine) {
@@ -286,7 +249,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
         dm = context.getResources().getDisplayMetrics();
         mCameraId = CameraHolder.instance().getBackCameraId();
-        //String str = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE;
         String[] defaultFocusModes = {"continuous-video", "auto", "continuous-picture"};
         mFocusManager = new FocusManager(defaultFocusModes);
         /*
@@ -295,7 +257,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
          */
         mCameraOpenThread.start();
 
-        mCameraPreview = new CameraPreview(CameraActivity.this,this.context, mCameraDevice);
+        mCameraPreview = new CameraPreview(CameraActivity.this, this.context, mCameraDevice);
         mCameraPreview.setOnTouchListener(CameraActivity.this);
 
         SurfaceHolder holder = mCameraPreview.getHolder();
@@ -320,14 +282,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         openCvHelper = new OpenCvHelper(CameraActivity.this);
 
         application = new OcrData();
-//        fileCacheDirectory = new File(getCacheDir(), "files");
-//        if (!fileCacheDirectory.exists()) {
-//            fileCacheDirectory.mkdir();
-//        }
-
         isPreviewSet = false;
-        // make sure preview filed is public to access in whole activity
-//        preview = (SurfaceView) findViewById(R.id.camera_preview);
 
         try {
             Resources myResources = context.getResources();
@@ -383,7 +338,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
 //        mRecCnt = 0;
 //        gotmrz = -1;
-        g_recogResult = new com.docrecog.scan.RecogResult();
+        g_recogResult = new RecogResult();
 //            mScanTitle.setText("Scan Front Side of " + RecogEngine.getCardname());
         SetFrontTemplete();
         isDone = false;
@@ -438,8 +393,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         if (mOpenCameraFail || mCameraDisabled)
             return;
 
-        // if (mRecogService != null && mRecogService.isProcessing())
-        // showProgress(null);
         mRecCnt = 0;
         mPausing = false;
 
@@ -447,7 +400,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         if (mCameraState == PREVIEW_STOPPED) {
             try {
                 mCameraDevice = Util.openCamera(mCameraId);
-//                mCameraDevice = Camera.open();
                 initializeCapabilities();
                 startPreview();
             } catch (Exception e) {
@@ -566,7 +518,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     @Override
     public void onPreviewFrame(final byte[] data, Camera camera) {
-        // TODO Auto-generated method stub
 //		Log.e(TAG, "onPreviewFrame mPausing=" + mPausing + ", mCameraState=" + mCameraState);
 
         if (mPausing) {
@@ -600,8 +551,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                     }
                     int i = openCvHelper.doCheckFrame(data, width, height);
                     if (i > 0) {
-                        // end to checking from native code
-//                        showToast("");
                         YuvImage temp = new YuvImage(data, format, width, height, null);
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         temp.compressToJpeg(new Rect(0, 0, temp.getWidth(), temp.getHeight()), 100, os);
@@ -633,7 +582,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                         try {
                             if (finalrect.left >= 0 && finalrect.top >= 0 && finalrect.width() > 0 && finalrect.height() > 0) {
                                 bmCard = Bitmap.createBitmap(bmp1, finalrect.left, finalrect.top, finalrect.width(), finalrect.height(), matrix, true);
-//                        bmCard = Bitmap.createBitmap(bmp1, finalrect.left, finalrect.top, finalrect.width(), finalrect.height());//memory leak
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -652,14 +600,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-//                                                list = new ArrayList<>();
-//                                                HashMap<String, String> prodHashMap = new HashMap<String, String>();
-//                                                prodHashMap.put("message", "Processing...");
-//                                                list.add(prodHashMap);
-//                                                messageChannel.send(list);
-
                                                 onUpdateProcess("3");
-//                                        showToast("Processing...");
                                             }
                                         });
                                         Bitmap docBmp = bmCard.copy(Bitmap.Config.ARGB_8888, false);
@@ -689,7 +630,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 // bright front image for make face more bright
 //                                Bitmap bitmap = brightImage(bmCard);
 //                                frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bitmap, doblurcheck);
-                            frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bmCard, doblurcheck);
+                                frameData = openCvHelper.nativeCheckCardIsInFrame(CameraActivity.this, bmCard, doblurcheck);
                             }
                         }
 
@@ -710,21 +651,15 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                                 }
                                                 showResultActivity();
                                             } else {
-                                                Log.d(TAG, "failed");
-                                                list = new ArrayList<>();
-                                                HashMap<String, String> prodHashMap = new HashMap<String, String>();
-                                                prodHashMap.put("message", framemessage);
-                                                list.add(prodHashMap);
-//                                                messageChannel.send(list);
 
                                                 try {
                                                     docBmp.recycle();
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
-                                                if (!mPausing && mCameraDevice != null) {
-                                                    mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
-                                                }
+//                                                if (!mPausing && mCameraDevice != null) {
+//                                                    mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
+//                                                }
 
                                                 mHandler.sendMessageDelayed(
                                                         mHandler.obtainMessage(TRIGER_RESTART_RECOG),
@@ -759,25 +694,15 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                                     e.printStackTrace();
                                                 }
 
-                                                if (!mPausing && mCameraDevice != null) {
-                                                    mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
-                                                }
+//                                                if (!mPausing && mCameraDevice != null) {
+//                                                    mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
+//                                                }
 
                                                 mHandler.sendMessageDelayed(
                                                         mHandler.obtainMessage(TRIGER_RESTART_RECOG),
                                                         TRIGER_RESTART_RECOG_DELAY);
                                             }
                                         } else {
-                                            Log.d(TAG, "failed");
-                                            list = new ArrayList<>();
-                                            try {
-                                                HashMap<String, String> prodHashMap = new HashMap<String, String>();
-                                                prodHashMap.put("message", framemessage);
-                                                list.add(prodHashMap);
-//                                                messageChannel.send(list);
-                                            } catch (IllegalStateException i) {
-
-                                            }
 
                                             if (isDone) {
                                                 return;
@@ -789,9 +714,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                                 e.printStackTrace();
                                             }
 
-                                            if (!mPausing && mCameraDevice != null) {
-                                                mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
-                                            }
+//                                            if (!mPausing && mCameraDevice != null) {
+//                                                mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
+//                                            }
 
                                             mHandler.sendMessageDelayed(
                                                     mHandler.obtainMessage(TRIGER_RESTART_RECOG),
@@ -807,21 +732,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                             mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
                         }
                     } else if (i == 0) {
-                        if (frameCount % 2 == 0) {
-//                            CameraActivity.this.runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-////                            showToast("Keep Document Steady");
-//                                    HashMap<String, String> prodHashMap = new HashMap<String, String>();
-//                                    prodHashMap.put("message", "Keep Document Steady");
-//                                    list.add(prodHashMap);
-//                                    messageChannel.send(list);
-//                                }
-//                            });
-                        }
-                        if (!mPausing && mCameraDevice != null) {
-                            mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
-                        }
+//                        if (!mPausing && mCameraDevice != null) {
+//                            mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
+//                        }
 
                         mHandler.sendMessageDelayed(
                                 mHandler.obtainMessage(TRIGER_RESTART_RECOG),
@@ -876,9 +789,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                 recogThread.start();
             }
         } else {
-            if (!mPausing && mCameraDevice != null) {
-                mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
-            }
+//            if (!mPausing && mCameraDevice != null) {
+//                mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
+//            }
 
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(TRIGER_RESTART_RECOG),
@@ -914,11 +827,13 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         return (byte) iVal;
     }
 
+    //set result data
     private final class getDocData extends AsyncTask<Void, Void, String> {
+        List<HashMap<String, String>> result_list;
 
         @Override
         protected void onPreExecute() {
-            list = new ArrayList<>();
+            result_list = new ArrayList<>();
 
             Frontdata = RecogEngine.getFrontData();
             Backdata = RecogEngine.getBackData();
@@ -955,19 +870,19 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                                 face1 = ImageOpencv.getImage(value);
 
                                             }
-                                            if (DEBUG) { // TODO remove it
-                                                if (face1 == null) {
-                                                    face1 = g_recogResult.faceBitmap; //memory leak
-
-                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                                    face1.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                                    byte[] b = baos.toByteArray();
-                                                    value = Base64.encodeToString(b, Base64.DEFAULT);
-                                                }
-                                            }
+//                                            if (DEBUG) {
+//                                                if (face1 == null) {
+//                                                    face1 = g_recogResult.faceBitmap; //memory leak
+//
+//                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                                                    face1.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//                                                    byte[] b = baos.toByteArray();
+//                                                    value = Base64.encodeToString(b, Base64.DEFAULT);
+//                                                }
+//                                            }
                                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                             prodHashMap.put("face", value);
-                                            list.add(prodHashMap);//memory leak
+                                            result_list.add(prodHashMap);//memory leak
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -993,7 +908,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
                             prodHashMap.put("frontBitmap", frontBitmapencoded);
-                            list.add(prodHashMap);
+                            result_list.add(prodHashMap);
 
                             Bitmap iv_frontside = frontBitmap;
                         } catch (Exception e) {
@@ -1002,14 +917,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                     }
 
                 }
-            } else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                    ly_front.setVisibility(View.GONE);
-
-                    }
-                });
             }
 
             if (Backdata != null) {
@@ -1032,14 +939,14 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                                     HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                     prodHashMap.put("_img", _img);
-                                    list.add(prodHashMap);
+                                    result_list.add(prodHashMap);
 
                                 } else {
                                     try {
                                         Bitmap bitmap = ImageOpencv.getImage(value);
                                         HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                         prodHashMap.put("_img", value);
-                                        list.add(prodHashMap);
+                                        result_list.add(prodHashMap);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -1059,7 +966,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("MRZ", MRZ);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
 
                             } else {
@@ -1067,7 +974,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String mrz = value.replace(" ", "");
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("MRZ", mrz);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
                             }
                             if (!TextUtils.isEmpty(g_recogResult.docType)) {
@@ -1075,7 +982,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String Document = g_recogResult.docType;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("docType", Document);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
 
                             }
@@ -1085,7 +992,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String surname = g_recogResult.surname;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("surname", surname);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
 
                             if (!TextUtils.isEmpty(g_recogResult.givenname)) {
@@ -1093,14 +1000,14 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String givenname = g_recogResult.givenname;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("givenname", givenname);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
                             if (!TextUtils.isEmpty(g_recogResult.docnumber)) {
 
                                 String docnumber = g_recogResult.docnumber;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("docnumber", docnumber);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
                             }
                             if (!TextUtils.isEmpty(g_recogResult.docchecksum)) {
@@ -1108,7 +1015,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String docchecksum = g_recogResult.docchecksum;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("docchecksum", docchecksum);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
                             }
 
@@ -1117,7 +1024,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String country = g_recogResult.country;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("country", country);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
 
                             if (!TextUtils.isEmpty(g_recogResult.nationality)) {
@@ -1125,7 +1032,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String nationality = g_recogResult.nationality;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("nationality", nationality);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
                             if (!TextUtils.isEmpty(g_recogResult.sex)) {
 
@@ -1143,7 +1050,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("sex", sex);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
 
                             DateFormat date = new SimpleDateFormat("yymmdd", Locale.getDefault());
@@ -1156,7 +1063,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String birthDate = g_recogResult.birth;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("birthDate", birthDate);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 //                                    } catch (ParseException e) {
 //                                        e.printStackTrace();
 //                                    }
@@ -1166,7 +1073,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String birthchecksum = g_recogResult.birthchecksum;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("birthchecksum", birthchecksum);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
                             }
                             if (!TextUtils.isEmpty(g_recogResult.expirationchecksum)) {
@@ -1174,7 +1081,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String expirationchecksum = g_recogResult.expirationchecksum;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("expirationchecksum", expirationchecksum);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 
                             }
                             if (!TextUtils.isEmpty(g_recogResult.expirationdate)) {
@@ -1186,7 +1093,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String expirationdate = g_recogResult.expirationdate;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("expiryDate", expirationdate);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
 //                                    } catch (ParseException e) {
 //                                        e.printStackTrace();
 //                                    }
@@ -1197,7 +1104,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String otherid = g_recogResult.otherid;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("otherid", otherid);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
 
                             if (!TextUtils.isEmpty(g_recogResult.otheridchecksum)) {
@@ -1205,7 +1112,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String otheridchecksum = g_recogResult.otheridchecksum;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("otheridchecksum", otheridchecksum);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
 
                             if (!TextUtils.isEmpty(g_recogResult.secondrowchecksum)) {
@@ -1213,7 +1120,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String secondrowchecksum = g_recogResult.secondrowchecksum;
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("secondrowchecksum", secondrowchecksum);
-                                list.add(prodHashMap);
+                                result_list.add(prodHashMap);
                             }
 
                             String Result = "";
@@ -1228,7 +1135,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
                             prodHashMap.put("Result", Result);
-                            list.add(prodHashMap);
+                            result_list.add(prodHashMap);
 
                             if (BackImage != null && !BackImage.isRecycled()) {
                                 runOnUiThread(new Runnable() {
@@ -1245,19 +1152,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                             prodHashMap.put("BackImage", BackImageencoded);
-                                            list.add(prodHashMap);
-
-//                            iv_backside.setImageBitmap(BackImage);
-
-
-//                            g_recogResult = new RecogResult();
-////            mScanTitle.setText("Scan Front Side of " + RecogEngine.getCardname());
-//                            SetFrontTemplete();
-//                            isDone = false;
-//                            RecogEngine.setFrontData(null);
-//                            RecogEngine.setBackData(null);
-
-//                            new CameraActivity(context, registrar, cameraid);
+                                            result_list.add(prodHashMap);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -1269,14 +1164,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                         }
                     }
                 }
-            } else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                    ly_back.setVisibility(View.GONE);
-
-                    }
-                });
             }
 
             return "Executed";
@@ -1284,23 +1171,11 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
         @Override
         protected void onPostExecute(String result) {
-//            messageChannel.send(list);
-            // You might want to change "executed" for the returned string
-            // passed into onPostExecute(), but that is up to you
+            //send result in flutter
+            Log.d("aaaa   ",""+result_list.size());
+            messageChannel.send(result_list);
         }
     }
-
-//    public int doWork() {
-//
-//        try {
-//            RecogEngine recogEngine = new RecogEngine();
-//            ans = recogEngine.initEngine(CameraActivity.this);
-//        } catch (Exception e) {
-//            Log.e("threadmessage", e.getMessage());
-//        }
-//        Toast.makeText(context, "sssss : " + ans, Toast.LENGTH_LONG);
-//        return ans;
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1315,7 +1190,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
             mRecCnt = 0;
             gotmrz = -1;
             g_recogResult = new RecogResult();
-//            mScanTitle.setText("Scan Front Side of " + RecogEngine.getCardname());
             SetFrontTemplete();
             isDone = false;
         }
@@ -1335,48 +1209,12 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     }
 
 
-    @Override
-    public void onBackPressed() {
-        try {
-            if (RecogEngine.getFrontimage() != null && !RecogEngine.getFrontimage().isRecycled())
-                RecogEngine.getFrontimage().recycle();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            if (RecogEngine.getBackimage() != null && !RecogEngine.getBackimage().isRecycled())
-                RecogEngine.getBackimage().recycle();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        RecogEngine.setFrontData(null);
-        RecogEngine.setBackData(null);
-//        if (isBackPressed) {
-        super.onBackPressed();
-//        } else {
-//            Toast.makeText(CameraActivity.this, "Press again to exit app", Toast.LENGTH_SHORT).show();
-//            isBackPressed = true;
-//        }
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                isBackPressed = false;
-//            }
-//        }, 2000);
-    }
-
-
     /*When data scan successfully this method called and display result*/
     void showResultActivity() {
         Runtime.getRuntime().gc();
         if (!isDone) {
             isDone = true;
             new getDocData().execute();
-            // pass result data through intent to resolve crash on face match
-//            application.setMrzData(g_recogResult);
-//            intent.putExtra("ocrData", application);
-//            startActivityForResult(intent, 101);
             mCardScanner.closeOCR(0);
             playEffect();
         }
@@ -1450,7 +1288,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                 mCameraDevice.setPreviewDisplay(holder);
             }
         } catch (Throwable ex) {
-//            closeCamera();
+            closeCamera();
 //            throw new RuntimeException("setPreviewDisplay failed", ex);
         }
     }
@@ -1668,63 +1506,10 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                     }
                 }
             }
-
-//            Runnable runnable = new Runnable() {
-//                public void run() {
-//            mScanMsg.setText(msg);\
-
-
-//            Toast.makeText(mContext, "" + msg, Toast.LENGTH_SHORT).show();
-//                }
-//            };
-//            runOnUiThread(runnable);
-//                drawOverlay();
-//            }
-//            }
         }
     }
 
     ObjectAnimator anim = null;
-
-    //flip the image
-    private void flipImage() {
-        try {
-//            mFlipImage.setVisibility(View.VISIBLE);
-            anim = (ObjectAnimator) AnimatorInflater.loadAnimator(context, R.animator.flipping);
-            anim.setTarget(mFlipImage);
-            anim.setDuration(1000);
-
-
-            Animator.AnimatorListener animatorListener
-                    = new Animator.AnimatorListener() {
-
-                public void onAnimationStart(Animator animation) {
-                }
-
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-
-                public void onAnimationEnd(Animator animation) {
-                    try {
-//                        mFlipImage.setVisibility(View.INVISIBLE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                public void onAnimationCancel(Animator animation) {
-
-                }
-            };
-
-            anim.addListener(animatorListener);
-            anim.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
@@ -1751,8 +1536,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         // Since change scene mode may change supported values,
 
         //mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-//        mModeView.setText(R.string.preview_mode);
-
         int camOri = CameraHolder.instance().getCameraInfo()[mCameraId].orientation;
         // Set the preview frame aspect ratio according to the picture size.
         Camera.Size size = mParameters.getPictureSize();
@@ -1773,17 +1556,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         //	optimalSize = Util.getOptimalPreviewSize(this, sizes, aspectWtoH);
         //else
         {
-
-//            Display display = getWindowManager().getDefaultDisplay();
-//
-
-//            WindowManager wm = (WindowManager)    context.getSystemService(Context.WINDOW_SERVICE);
-//            Display display = wm.getDefaultDisplay();
-//            Point psize = new Point();
-//            display.getSize(psize);
-//            width = psize.x;
-//            height = psize.y;
-//            int requiredArea = width * height;
             int requiredArea = mPreviewWidth * mPreviewHeight;
             //optimalSize = Util.getOptimalPreviewSize(this, sizes, aspectWtoH);
             optimalSize = Util.getOptimalPreviewSizeByArea(sizes, requiredArea);
@@ -1814,7 +1586,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         previewSize = new Size(optimalSize.width, optimalSize.height);
         String previewSize = "";
         previewSize = "[" + optimalSize.width + "x" + optimalSize.height + "]";
-//        mPreviewSizeView.setText(previewSize);
 
         // Set JPEG quality.
         int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(
@@ -2143,17 +1914,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     @Override
     public void onUpdateProcess(final String s) {
-        framemessage = s;
-
-
-//        Runnable runnable = new Runnable() {
-//            public void run() {
-//                if (!isFinishing()) {
-//
-//                }
-//            }
-//        };
-//        runOnUiThread(runnable);
 
         if (!s.isEmpty()) {
             newMessage = s;
@@ -2161,8 +1921,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                 @Override
                 public void run() {
 //                            showToast("Keep Document Steady");
+                    list = new ArrayList<>(2);
                     HashMap<String, String> prodHashMap = new HashMap<String, String>();
-                    prodHashMap.put("message", framemessage);
+                    prodHashMap.put("message", s);
                     list.add(prodHashMap);
                     messageChannel.send(list);
                 }
@@ -2172,6 +1933,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                     try {
                         if (!s.contains("lighting"))
                             if (newMessage.equals(s) || !s.contains("Processing")) {
+                                list = new ArrayList<>(2);
                                 HashMap<String, String> prodHashMap = new HashMap<String, String>();
                                 prodHashMap.put("message", "");
                                 list.add(prodHashMap);
@@ -2202,16 +1964,17 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                     break;
                 }
 
-                case SET_CAMERA_PARAMETERS_WHEN_IDLE: {
-                    setCameraParametersWhenIdle(0);
-                    break;
-                }
-
-//                case TRIGER_RESTART_RECOG:
-//                    if (!mPausing)
-//                        mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
-//                    // clearNumberAreaAndResult();
+//                case SET_CAMERA_PARAMETERS_WHEN_IDLE: {
+//                    setCameraParametersWhenIdle(0);
 //                    break;
+//                }
+
+                case TRIGER_RESTART_RECOG:
+                    if (!mPausing && mCameraDevice != null) {
+                        mCameraDevice.setOneShotPreviewCallback(CameraActivity.this);
+                    }
+                    // clearNumberAreaAndResult();
+                    break;
             }
         }
     }
