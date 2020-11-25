@@ -754,7 +754,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                             RecogEngine.setFrontimage(image);
                         }
                         if (RecogEngine.getBackData() == null) {
-                            flipImage();
+                            //flipImage();
                             SetBackTemplete();
                             list = new ArrayList<>();
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
@@ -770,7 +770,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                         if (RecogEngine.getFrontData() == null) {
 
-                            flipImage();
+                            //flipImage();
                             //set back image templete
                             SetFrontTemplete();
 
