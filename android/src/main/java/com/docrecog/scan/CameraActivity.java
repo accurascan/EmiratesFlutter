@@ -754,8 +754,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                             RecogEngine.setFrontimage(image);
                         }
                         if (RecogEngine.getBackData() == null) {
-//                            flipImage();
-                            playEffect();
+                            flipImage();
                             SetBackTemplete();
                             list = new ArrayList<>();
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
@@ -771,7 +770,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
                         if (RecogEngine.getFrontData() == null) {
 
-//                            flipImage();
+                            flipImage();
                             //set back image templete
                             SetFrontTemplete();
 
@@ -1172,7 +1171,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         @Override
         protected void onPostExecute(String result) {
             //send result in flutter
-            Log.d("aaaa   ",""+result_list.size());
             messageChannel.send(result_list);
         }
     }
@@ -1216,7 +1214,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
             isDone = true;
             new getDocData().execute();
             mCardScanner.closeOCR(0);
-            playEffect();
         }
     }
 
@@ -1511,6 +1508,46 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     ObjectAnimator anim = null;
 
+    //flip the image
+    private void flipImage() {
+        try {
+//            mFlipImage.setVisibility(View.VISIBLE);
+            anim = (ObjectAnimator) AnimatorInflater.loadAnimator(context, R.animator.flipping);
+            anim.setTarget(mFlipImage);
+            anim.setDuration(1000);
+
+
+            Animator.AnimatorListener animatorListener
+                    = new Animator.AnimatorListener() {
+
+                public void onAnimationStart(Animator animation) {
+                }
+
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+
+                public void onAnimationEnd(Animator animation) {
+                    try {
+//                        mFlipImage.setVisibility(View.INVISIBLE);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onAnimationCancel(Animator animation) {
+
+                }
+            };
+
+            anim.addListener(animatorListener);
+            anim.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
         // video camera RecogEngine.
@@ -1803,19 +1840,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
 
     private boolean isCameraIdle() {
         return (mCameraState == IDLE || mFocusManager.isFocusCompleted());
-    }
-
-    void playEffect() {
-        if (audioManager != null)
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
-        mediaPlayer.start();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer1) {
-                //mediaPlayer.stop();
-                //mediaPlayer.release();
-            }
-        });
     }
 
     //requesting the camera permission
