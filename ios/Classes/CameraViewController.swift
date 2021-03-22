@@ -195,6 +195,8 @@ public class CameraViewController: UIViewController{
                         result(stFaceImage)
                         
                         
+                    } else {
+                        result("")
                     }
                     
                 })
@@ -215,6 +217,8 @@ public class CameraViewController: UIViewController{
                     
                     print(twoDecimalPlaces)
                     result(twoDecimalPlaces)
+                }else{
+                    result(nil)
                 }
                 
                 
