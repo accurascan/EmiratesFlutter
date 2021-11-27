@@ -513,7 +513,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
             match_score = FaceLockHelper.Similarity(leftResult.getFeature(), rightResult.getFeature(), rightResult.getFeature().length);
             match_score *= 100.0f;
         }
-        CameraActivity.facematch_resutl.success(String.format("%.2f", match_score));
+      //  CameraActivity.facematch_resutl.success(String.format("%.2f", match_score));
+         CameraActivity.facematch_resutl.success(String.valueOf(match_score));
+
     }
 
     @Override
