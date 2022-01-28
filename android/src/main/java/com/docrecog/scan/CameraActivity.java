@@ -370,6 +370,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     protected void onResume() {
 //        super.onResume();
 
+        super.onResume();
         mbVibrate = true;
         if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
         if (mCameraDevice == null) {// && isKeyguardLocked()) {
@@ -419,6 +420,28 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         }
 
         keepScreenOnAwhile();
+    }
+
+    public void saveLogFile() {
+            File file = new File(android.os.Environment.getExternalStorageDirectory().getPath()+"/Download", "AccuraEmirates.log");
+            String command = "logcat -f "+ file.getPath()+ " -v time *:V";
+            //command = "mahdi";
+            // + " -v time *:V
+            Log.d(TAG, "command: " + command);
+            String s=android.os.Environment.getExternalStorageDirectory()+"/aaa";
+
+
+            try{
+                Log.i("recogpassport","11111111");
+                Runtime.getRuntime().exec(command);
+            }
+            catch( java.io.IOException e){
+                e.printStackTrace();
+            }
+            Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            scanIntent.setData(android.net.Uri.fromFile(file));
+            sendBroadcast(scanIntent);
+
     }
 
     @Override
@@ -482,6 +505,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "scan#startCamera":
+                saveLogFile();
                 break;
             case "scan#activitydoOnResume":
                 doOnResume();

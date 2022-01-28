@@ -86,6 +86,7 @@ public class CameraViewController: UIViewController{
             switch call.method{
             case "scan#startCamera":
                 // if self.isCheckFirstTime{
+                self.saveLogFile()
                 self.startCamera()
                 //}
                 break;
@@ -323,7 +324,11 @@ public class CameraViewController: UIViewController{
             managePermission();
         }
     }
-    
+
+    func saveLogFile(){
+
+    }
+
     func stopCamera(){
         videoCameraWrapper?.stopCamera()
         videoCameraWrapper = nil
@@ -344,6 +349,7 @@ public class CameraViewController: UIViewController{
         let filepathAlt = Bundle.main.path(forResource: "haarcascade_frontalface_alt", ofType: "xml")
         
         videoCameraWrapper = VideoCameraWrapper.init(delegate: self, andImageView: imageView, andFacePath: filepathAlt)
+        videoCameraWrapper?.saveLogtoLogfile(true)
         imageView.setImageToCenter()
     }
     

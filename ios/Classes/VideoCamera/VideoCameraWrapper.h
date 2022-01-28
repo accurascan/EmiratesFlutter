@@ -25,5 +25,6 @@
 -(void)startCamera;
 -(void)stopCamera;
 -(void)ChangedOrintation:(CGFloat)width height:(CGFloat)height;
+-(void)saveLogtoLogfile:(bool)isprintLog;
 
 @end
