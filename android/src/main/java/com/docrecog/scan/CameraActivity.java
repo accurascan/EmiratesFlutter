@@ -64,8 +64,11 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -422,26 +425,22 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         keepScreenOnAwhile();
     }
 
-    public void saveLogFile() {
-            File file = new File(android.os.Environment.getExternalStorageDirectory().getPath()+"/Download", "AccuraEmirates.log");
-            String command = "logcat -f "+ file.getPath()+ " -v time *:V";
-            //command = "mahdi";
-            // + " -v time *:V
-            Log.d(TAG, "command: " + command);
-            String s=android.os.Environment.getExternalStorageDirectory()+"/aaa";
+    public static StringBuilder getLogs() {
+        StringBuilder logBuilder = new StringBuilder();
+        Log.e("getLogsgetLogs", "getLogs: " + "getLogs");
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-
-            try{
-                Log.i("recogpassport","11111111");
-                Runtime.getRuntime().exec(command);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if(line.contains("ocr")){
+                    logBuilder.append(line + "\n");
+                }
             }
-            catch( java.io.IOException e){
-                e.printStackTrace();
-            }
-            Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            scanIntent.setData(android.net.Uri.fromFile(file));
-            sendBroadcast(scanIntent);
-
+        } catch (IOException e) {
+        }
+        return logBuilder;
     }
 
     @Override
@@ -505,13 +504,15 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "scan#startCamera":
-                saveLogFile();
                 break;
             case "scan#activitydoOnResume":
                 doOnResume();
                 break;
             case "scan#stopCamera":
                 closeCamera();
+                break;
+            case "scan#getLog":
+                result.success(getLogs().toString());
                 break;
             case "scan#activitypause":
                 onPause();
