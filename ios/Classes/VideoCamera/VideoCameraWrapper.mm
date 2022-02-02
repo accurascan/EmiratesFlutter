@@ -208,6 +208,13 @@ BOOL ischeckMation;
     return self;
 }
 
+-(void)saveLogtoLogfile:(bool)isprintLog
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    setPrintLogs(isprintLog, std::string([documentsDirectory UTF8String]));
+}
+
 /*
  Call to Opencv framework method
  Parameters to Pass: scanning image CV::Mat metrix

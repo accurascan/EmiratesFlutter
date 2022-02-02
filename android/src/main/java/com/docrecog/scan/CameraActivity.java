@@ -64,8 +64,11 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -370,6 +373,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     protected void onResume() {
 //        super.onResume();
 
+        super.onResume();
         mbVibrate = true;
         if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
         if (mCameraDevice == null) {// && isKeyguardLocked()) {
@@ -419,6 +423,24 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         }
 
         keepScreenOnAwhile();
+    }
+
+    public static StringBuilder getLogs() {
+        StringBuilder logBuilder = new StringBuilder();
+        Log.e("getLogsgetLogs", "getLogs: " + "getLogs");
+        try {
+            Process process = Runtime.getRuntime().exec("logcat -d");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if(line.contains("ocr")){
+                    logBuilder.append(line + "\n");
+                }
+            }
+        } catch (IOException e) {
+        }
+        return logBuilder;
     }
 
     @Override
@@ -488,6 +510,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                 break;
             case "scan#stopCamera":
                 closeCamera();
+                break;
+            case "scan#getLog":
+                result.success(getLogs().toString());
                 break;
             case "scan#activitypause":
                 onPause();

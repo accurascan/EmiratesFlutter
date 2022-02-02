@@ -120,8 +120,14 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
+  getLog() async {
+    String log = await controller.getLog();
+    print('log------> $log -------->');
+  }
+
   @override
   void dispose() {
+    getLog();
     controller.stopCamera();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();

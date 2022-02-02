@@ -23,6 +23,11 @@ class ScanPreviewController {
     print('activitydoOnResume: $result');
   }
 
+  Future<String> getLog() async {
+    String result = await channel.invokeMethod('scan#getLog');
+    return result;
+  }
+
   stopCamera() async {
     String result = await channel.invokeMethod('scan#stopCamera');
     print('stop camera: $result');

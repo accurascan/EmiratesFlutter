@@ -208,5 +208,7 @@ int docrecog_scan_RecogEngine_setGlarePercentage(int jintMin, int jintMax);
 int docrecog_scan_RecogEngine_setHologramDetection(bool jint1);
 int docrecog_scan_RecogEngine_setLowLightTolerance(int tolerance);
 int docrecog_scan_RecogEngine_setMotionThreshold(int motionTolerance);
+void setPrintLogs(bool b, std::string documentDirectory);
+
 
 #endif /* Accura_h */

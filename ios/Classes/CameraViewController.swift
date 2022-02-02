@@ -92,6 +92,9 @@ public class CameraViewController: UIViewController{
             case "scan#stopCamera":
                 self.stopCamera()
                 break;
+            case "scan#getLog":
+                self.getLogs(FlutterResult: result)
+                break;
             case "facecrop":
                 
                 guard let args = call.arguments else {
@@ -323,13 +326,30 @@ public class CameraViewController: UIViewController{
             managePermission();
         }
     }
-    
+
     func stopCamera(){
         videoCameraWrapper?.stopCamera()
         videoCameraWrapper = nil
         imageView.image = nil
     }
-    
+
+    func getLogs(FlutterResult : FlutterResult) {
+      // Do any additional setup after loading the view.
+         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
+         let getFilePath = paths.appendingPathComponent("AccuraEmiratesLog.txt")
+         if getFilePath != nil{
+             do {
+                 let content = try String(contentsOfFile: getFilePath, encoding: String.Encoding.utf8)
+//                FlutterResult.sendMessage(content)
+                FlutterResult(content)
+             } catch let error as NSError {
+                 print("Error occured: \(error.localizedDescription)")
+             }
+         } else {
+             print("Path not available")
+         }
+    }
+
     
     func setOCRData(){
         dictBackResult.removeAll()
@@ -344,6 +364,7 @@ public class CameraViewController: UIViewController{
         let filepathAlt = Bundle.main.path(forResource: "haarcascade_frontalface_alt", ofType: "xml")
         
         videoCameraWrapper = VideoCameraWrapper.init(delegate: self, andImageView: imageView, andFacePath: filepathAlt)
+        videoCameraWrapper?.saveLogtoLogfile(true)
         imageView.setImageToCenter()
     }
     
