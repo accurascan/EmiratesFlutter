@@ -45,7 +45,7 @@ public class CameraViewController: UIViewController{
     var camaraImage: UIImage?
     var faceRegion: NSFaceRegion?
     var imageView: UIImageView!
-    
+     var goNativeCallBack: FlutterResult? = nil
     var videoCameraWrapper: VideoCameraWrapper? = nil
     
     var shareScanningListing: NSMutableDictionary = [:]
@@ -107,7 +107,7 @@ public class CameraViewController: UIViewController{
                     let fileName = String(format: "%@", (cameraimage!.components(separatedBy: "/").last!))
                     print(fileName)
                     
-                    self.camaraImage = UIImage(named: cameraimage!)
+                    self.camaraImage = self.convertBase64ToImage(base64String: cameraimage!)
                     
                     self.clearTempFolder(filename: fileName)
                     
@@ -123,11 +123,11 @@ public class CameraViewController: UIViewController{
                 
                 
                 if self.camaraImage != nil{
-                    var flippedImage: UIImage? = nil
-                    if let CGImage = self.camaraImage?.cgImage {
-                        flippedImage = UIImage(cgImage: CGImage, scale: self.camaraImage!.scale, orientation: .right)
-                    }
-                    self.camaraImage = flippedImage!
+//                    var flippedImage: UIImage? = nil
+//                    if let CGImage = self.camaraImage?.cgImage {
+//                        flippedImage = UIImage(cgImage: CGImage, scale: self.camaraImage!.scale, orientation: .right)
+//                    }
+//                    self.camaraImage = flippedImage!
                     
                     let ratio = CGFloat(self.camaraImage!.size.width) / self.camaraImage!.size.height
                     self.camaraImage = self.compressimage(with: self.camaraImage, convertTo: CGSize(width: 600 * ratio, height: 600))!
@@ -223,7 +223,18 @@ public class CameraViewController: UIViewController{
                 
                 
                 break;
-                
+          case "faceimage":
+              self.goNativeCallBack = result
+              DispatchQueue.main.async {
+                  
+                  let storyboard = UIStoryboard.init(name: "Liveness", bundle: nil)
+                  let viewController = storyboard.instantiateViewController(withIdentifier: "LivenessVC") as! LivenessVC
+                  viewController.delegate = self
+                  viewController.ischeckLiveness = false
+
+                  self.getTopMostViewController()?.present(viewController, animated: true, completion: nil)
+              }
+              break;
             default:
                 break;
             }
@@ -237,7 +248,13 @@ public class CameraViewController: UIViewController{
         isFront = true
     }
     
-    
+        func convertBase64ToImage(base64String: String) -> UIImage? {
+            if let imageData = Data(base64Encoded: base64String) {
+                return UIImage(data: imageData)
+            } else {
+                return nil
+            }
+        }
     func clearTempFolder(filename: String?) {
         let fileManager = FileManager.default
         let tempFolderPath = NSTemporaryDirectory()
@@ -389,7 +406,33 @@ public class CameraViewController: UIViewController{
         
     }
     
+    func getTopMostViewController() -> UIViewController? {
+        var topMostViewController = UIApplication.shared.keyWindow?.rootViewController
+
+        while let presentedViewController = topMostViewController?.presentedViewController {
+            topMostViewController = presentedViewController
+        }
+
+        return topMostViewController
+    }
     
+    
+}
+
+
+extension CameraViewController: LivenessData {
+    public func LivenessData(stLivenessValue: String, livenessImage: UIImage, status: Bool) {
+        let base64String = convertImageToBase64(image: livenessImage)
+        self.goNativeCallBack!(base64String)
+    }
+
+    func convertImageToBase64(image: UIImage) -> String? {
+        guard let imageData = image.pngData() else {
+            return nil
+        }
+        return imageData.base64EncodedString()
+    }
+
 }
 
 extension CameraViewController: VideoCameraWrapperDelegate {

@@ -55,17 +55,20 @@ public class FaceMatch implements FaceCallback {
         image1 = new MyView(class_context);  //initialize the view of front image
         image2 = new MyView(class_context);
 
-        File file = new File(imagepath);
-
-        facematch_resutl = result;
-        facematch(file);
+//        File file = new File(imagepath);
+//
+//        facematch_resutl = result;
+        facematch(imagepath);
     }
 
     public String getPackageName() {
         return class_context.getPackageName();
     }
+    public FaceMatch(Context class_context) {
+        this.class_context = class_context;
+    }
 
-    private void initEngine() {
+    public int initEngine() {
 
         //call Sdk  method InitEngine
         // parameter to pass : FaceCallback callback, int fmin, int fmax, float resizeRate, String modelpath, String weightpath, AssetManager assets
@@ -83,7 +86,7 @@ public class FaceMatch implements FaceCallback {
         File weightFile = class_context.getApplicationContext().getFileStreamPath("weight.dat");
         String pathWeight = weightFile.getPath();
 
-        int nRet = FaceLockHelper.InitEngine(FaceMatch.this, 30, 800, 1.18f, pathModel, pathWeight,class_context.getAssets());
+        int nRet = FaceLockHelper.InitEngine(FaceMatch.this, 30, 800, 1.18f, pathModel, pathWeight,class_context.getAssets(),null,0);
         Log.i("ViewDataActivityTEMP", "InitEngine: " + nRet);
         if (nRet < 0) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(class_context);
@@ -111,18 +114,19 @@ public class FaceMatch implements FaceCallback {
             AlertDialog alert11 = builder1.create();
             alert11.show();
         }
+        return nRet;
     }
 
-    public void facematch(File f) {
-        String filename = f.getName();
-        File myDir = new File(f.getParent());
-        String[] children = myDir.list();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i].equals(filename)) {
-            } else {
-                new File(myDir, children[i]).delete();
-            }
-        }
+    public void facematch(String f) {
+//        String filename = f.getName();
+//        File myDir = new File(f.getParent());
+//        String[] children = myDir.list();
+//        for (int i = 0; i < children.length; i++) {
+//            if (children[i].equals(filename)) {
+//            } else {
+//                new File(myDir, children[i]).delete();
+//            }
+//        }
 
 //        File ttt = null;
 //        for (File temp : f.listFiles()) {
@@ -133,7 +137,9 @@ public class FaceMatch implements FaceCallback {
 //        }
 //        if (ttt == null)
 //            return;
-        Bitmap bmp = rotateImage(f.getPath());
+        byte[] decodedString = Base64.decode(f, Base64.DEFAULT);
+//        return
+        Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);;//rotateImage(f.getPath());
 //        f.delete();
         face2 = bmp.copy(Bitmap.Config.ARGB_8888, true);
 //        ivUserProfile2.setImageBitmap(face2);
@@ -150,7 +156,7 @@ public class FaceMatch implements FaceCallback {
             int s = (w * 32 + 31) / 32 * 4;
             ByteBuffer buff = ByteBuffer.allocate(s * h);
             nBmp.copyPixelsToBuffer(buff);
-            FaceLockHelper.DetectLeftFace(buff.array(), w, h);
+            DetectLeftFace(buff.array(), w, h);
         }
     }
 
@@ -285,14 +291,26 @@ public class FaceMatch implements FaceCallback {
                     ByteBuffer buff = ByteBuffer.allocate(s * h);
                     nBmp.copyPixelsToBuffer(buff);
                     if (leftResult != null) {
-                        FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature());
+                        DetectRightFace(buff.array(), w, h, leftResult.getFeature());
                     } else {
-                        FaceLockHelper.DetectRightFace(buff.array(), w, h, null);
+                        DetectRightFace(buff.array(), w, h, null);
                     }
                     CameraActivity.leftResult = leftResult;
                 }
             }
         }
+    }
+
+    private void DetectRightFace(byte[] array, int w, int h, float[] floats) {
+        FaceDetectionResult result1 = new FaceDetectionResult();
+        FaceLockHelper.DetectRightFace(array, w, h, floats, result1);
+        onRightDetect(result1);
+    }
+
+    private void DetectLeftFace(byte[] array, int w, int h) {
+        FaceDetectionResult result1 = new FaceDetectionResult();
+        FaceLockHelper.DetectLeftFace(array, w, h, result1);
+        onLeftDetect(result1);
     }
 
     //call if face detect

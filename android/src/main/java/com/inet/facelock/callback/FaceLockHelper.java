@@ -29,7 +29,7 @@ public class FaceLockHelper {
      * @param weightpath  deep CNN weight file's path.
      * @return result
      */
-    public static native int InitEngine(FaceCallback callback, int fmin, int fmax, float resizeRate, String modelpath, String weightpath, AssetManager assets);
+    public static native int InitEngine(FaceCallback callback, int fmin, int fmax, float resizeRatio, String modelpath, String weightpath, AssetManager assets, byte[] licBuff, int pLicLen1);
 
     /**
      * This is the function that finalize the face engine when app is closed.
@@ -44,9 +44,8 @@ public class FaceLockHelper {
      * @param vBmp face image buffer
      *             its format is RGBA or YUV420
      */
-    public static native void DetectLeftFace(byte[] vBmp, int width, int height);
-
-    public static native void DetectRightFace(byte[] vBmp, int width, int height, float[] feature);
+    public static native void DetectLeftFace(byte[] vBmp, int width, int height, FaceDetectionResult result);
+    public static native void DetectRightFace(byte[] vBmp, int width, int height, float[] feature, FaceDetectionResult result);
 
     /**
      * This is the function to extract feature from a face.

@@ -5,7 +5,20 @@
     <string name="scan_back">Scan Back Side of Document</string>
 
     <string name="ok">Ok</string>
+    <string name="accura_powered_by">Powered By</string>
 
+    <string name="feedBackframeMessage">Frame Your Face</string>
+    <string name="feedBackAwayMessage">Move Phone Away</string>
+    <string name="feedBackOpenEyesMessage">Keep Your Eyes Open</string>
+    <string name="feedBackCloserMessage">Move Phone Closer</string>
+    <string name="feedBackCenterMessage">Move Phone Center</string>
+    <string name="feedBackMultipleFaceMessage">Multiple Face Detected</string>
+    <string name="feedBackHeadStraightMessage">Keep Your Head Straight</string>
+    <string name="feedBackLowLightMessage">Low light detected</string>
+    <string name="feedBackBlurFaceMessage">Blur Detected Over Face</string>
+    <string name="feedBackGlareFaceMessage">Glare Detected</string>
+    <string name="processing">Processing...</string>
+    <string name="loading">Loading...</string>
 
     <string name="lastName">Last Name</string>
     <string name="firstName">First Name</string>

@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,16 +41,18 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import com.accurascan.accuraemirates.FocusManager;
+//import com.accurascan.accuraemirates.FocusManager.Listener;
+//import com.accurascan.accuraemirates.R;
+//import com.accurascan.accuraemirates.camera.CameraHolder;
+
 import com.accurascan.accuraemirates.FocusManager;
-import com.accurascan.accuraemirates.FocusManager.Listener;
 import com.accurascan.accuraemirates.R;
 import com.accurascan.accuraemirates.camera.CameraHolder;
-import com.docrecog.scan.OCRCallback;
-import com.docrecog.scan.SensorsActivity;
+import com.facedetection.SelfieFMCameraActivity;
 import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 import com.inet.facelock.callback.FaceLockHelper;
@@ -88,11 +89,9 @@ import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.common.StringCodec;
 import io.flutter.plugin.platform.PlatformView;
 
-import static org.opencv.BuildConfig.DEBUG;
-
 public class CameraActivity extends SensorsActivity implements PlatformView, MethodChannel.MethodCallHandler,
         SurfaceHolder.Callback, Camera.ShutterCallback, Camera.PreviewCallback,
-        Camera.PictureCallback, Listener, OnTouchListener, View.OnClickListener, OCRCallback {
+        Camera.PictureCallback, FocusManager.Listener, OnTouchListener, View.OnClickListener, OCRCallback {
 
     private static final String CHANNEL = "scan_preview";
     private int width;
@@ -203,6 +202,9 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private boolean isbothavailable = true;
     private boolean isfront = true;
     private boolean isback = false;
+
+    public static MethodChannel.Result onResult = null;
+
     private String cardside = "Front";
     private int cardpos = 0;
     private int gotmrz = -1;
@@ -252,7 +254,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
         String[] defaultFocusModes = {"continuous-video", "auto", "continuous-picture"};
         mFocusManager = new FocusManager(defaultFocusModes);
         /*
-         * To reduce startup time, we start the camera open and preview threads.
+         * To  reduce startup time, we start the camera open and preview threads.
          * We make sure the preview is started at the end of onCreate.
          */
         mCameraOpenThread.start();
@@ -370,6 +372,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     protected void onResume() {
 //        super.onResume();
 
+        super.onResume();
         mbVibrate = true;
         if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
         if (mCameraDevice == null) {// && isKeyguardLocked()) {
@@ -502,6 +505,15 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                 facematch_resutl = result;
                 calcMatch();
                 break;
+            case "faceimage":
+                facematch_resutl = result;
+                FaceMatch faceinit = new FaceMatch(context);
+                int val = faceinit.initEngine();
+                if(val == 0){
+                    Intent intent = new Intent(activity, SelfieFMCameraActivity.class);
+                    activity.startActivity(intent);
+                }
+                break;
         }
     }
 
@@ -513,7 +525,7 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
             match_score = FaceLockHelper.Similarity(leftResult.getFeature(), rightResult.getFeature(), rightResult.getFeature().length);
             match_score *= 100.0f;
         }
-         CameraActivity.facematch_resutl.success(String.valueOf(match_score));
+        CameraActivity.facematch_resutl.success(String.valueOf(match_score));
 
     }
 

@@ -1001,49 +1001,51 @@ class _result_activityState extends State<result_activity> {
                   flex: 1,
                   child: GestureDetector(
                     onTap: () async {
-                      pr.show();
-                      picture = await ImagePicker.pickImage(
-                        source: ImageSource.camera,
-                      );
-                      if (picture != null) {
-                        facecheckimage = await _channel.invokeMethod(
-                            'facecrop', {
-                          "cameraimage": picture.path,
-                          "cardfaceimage": face
-                        });
+                      try{
+                        await _channel.invokeMethod(
+                            'faceimage').then((value) async => {
+                          // setState(() async {
 
-                        if (facecheckimage != "") {
-                          facematch_result =
-                              await _channel.invokeMethod('facematch');
+                          print(";,cposmkcs$value"),
+                          if (value != null) {
+                            facecheckimage = await _channel.invokeMethod(
+                                'facecrop', {
+                              "cameraimage": value,
+                              "cardfaceimage": face
+                            }),
 
-                          if (facematch_result != null) {
-                            setState(await () {
-                              pr.hide();
-                              scroll_to = false;
-                              match_score = facematch_result;
-                              match_score_visiblity = true;
-                              if (match_score != "0.0" &&
-                                  match_score != "0.00") {
-                                macth_image = true;
+                            if (facecheckimage != "") {
+                              facematch_result =
+                              await _channel.invokeMethod('facematch'),
+
+                              if (facematch_result != null) {
+                                setState(await () {
+                                  scroll_to = false;
+                                  match_score = facematch_result;
+                                  match_score_visiblity = true;
+                                  if (match_score != "0.0" &&
+                                      match_score != "0.00") {
+                                    macth_image = true;
+                                  } else {
+                                    macth_image = false;
+                                  }
+
+                                  scroll_controller.jumpTo(0);
+                                })
                               } else {
-                                macth_image = false;
-                              }
+                                setState(() {
 
-                              scroll_controller.jumpTo(0);
-                            });
+                                }),
+                              }
+                            } else {
+
+                            }
                           } else {
-                            setState(() {
-                              pr.hide();
-                              Toast.show("Please, Try again", context);
-                            });
+                            // pr.close();
                           }
-                        } else {
-                          pr.hide();
-                          Toast.show("Please, Try again", context);
-                        }
-                      } else {
-                        pr.hide();
-                      }
+                          // })
+                        });
+                      }on PlatformException{}
                     },
                     child: Container(
                       margin: EdgeInsets.only(

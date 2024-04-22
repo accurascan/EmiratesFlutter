@@ -18,7 +18,7 @@ A new Flutter plugin.
   s.dependency 'Flutter'
   s.static_framework = true
   s.public_header_files = "Classes/VideoCamera/VideoCameraWrapperDelegate.h", "Classes/VideoCamera/VideoCameraWrapper.h", 'Classes/*.h'
-  s.private_header_files = 'Classes/CodeScan/**/*{.h,.cpp,.hpp}', 'Classes/FaceMatch/**/*{.h,.cpp,.hpp}'
+  s.private_header_files = 'Classes/CodeScan/**/*{.h,.cpp,.hpp}', 'Classes/FaceMatch/**/*{.h,.cpp,.hpp}','Classes/FaceDetection/**/*{.swift}'
   s.platform = :ios, '8.0'
   s.preserve_paths = 'opencv2.framework', 'Classes/Framework/*.a'
   s.xcconfig = {

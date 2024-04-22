@@ -12,6 +12,7 @@
 #import "GlobalMethods.h"
 #include "Accura.h"
 #include "zinterface.mm"
+#include "faceengine.h"
 
 @interface VideoCameraWrapper() <CvVideoCameraDelegate>
 @end
@@ -21,7 +22,7 @@
 {
     CvVideoCamera *videoCamera;
     cv::Mat _matOrg;
-    
+    cv::Mat _livOrg;
 }
 
 NSLock *lock1 = [[NSLock alloc]init];
@@ -121,7 +122,279 @@ BOOL isFirstMSG;
 
 BOOL isHologram;
 BOOL ischeckMation;
+NSString* feedBackframeMessage1;
+NSString* feedBackAwayMessage1;
+NSString* feedBackOpenEyesMessage1;
+NSString* feedBackCloserMessage1;
+NSString* feedBackCenterMessage1;
+NSString* feedBackMultipleFaceMessage1;
+NSString* feedBackFaceSteadyMessage1;
+NSString* feedBackLowLightMessage1;
+NSString* feedBackBlurFaceMessage1;
+NSString* feedBackGlareFaceMessage1;
+bool ischekLivenss;
+BOOL inProcessing;
+UILabel *feedbackLivenessMSG;
+BOOL isCheckFaceCalled;
+bool isCheckFaceCount;
+NSString *livenessStatus;
+bool isShowlivenessMSG = false;
+bool inProcessingLiveness = false;
 
+-(id)initWithDelegate:(UIViewController<VideoCameraWrapperDelegate>*)delegate andImageView:(UIImageView *)iv andMsgLabel:(UILabel*)l andfeedBackframeMessage:(NSString*)feedBackframeMessage andfeedBackAwayMessage:(NSString*)feedBackAwayMessage andfeedBackOpenEyesMessage:(NSString*)feedBackOpenEyesMessage andfeedBackCloserMessage:(NSString*)feedBackCloserMessage andfeedBackCenterMessage:(NSString*)feedBackCenterMessage andfeedBackMultipleFaceMessage:(NSString*)feedBackMultipleFaceMessage andfeedBackFaceSteady:(NSString*)feedBackFaceSteady andfeedBackLowLightMessage:(NSString*)feedBackLowLightMessage andfeedBackBlurFaceMessage:(NSString*)feedBackBlurFaceMessage andfeedBackGlareFaceMessage:(NSString*)feedBackGlareFaceMessage andcheckLivess:(bool)checkLivenss
+{
+
+    feedBackframeMessage1= feedBackframeMessage;
+    feedBackAwayMessage1 = feedBackAwayMessage;
+    feedBackOpenEyesMessage1 = feedBackOpenEyesMessage;
+    feedBackCloserMessage1 = feedBackCloserMessage;
+    feedBackCenterMessage1 = feedBackCenterMessage;
+    feedBackMultipleFaceMessage1 = feedBackMultipleFaceMessage;
+    feedBackFaceSteadyMessage1 = feedBackFaceSteady;
+    feedBackLowLightMessage1 = feedBackLowLightMessage;
+    feedBackBlurFaceMessage1 = feedBackBlurFaceMessage;
+    feedBackGlareFaceMessage1 = feedBackGlareFaceMessage;
+
+    ischekLivenss = true;
+    inProcessing = false;
+    imageView = iv;
+    feedbackLivenessMSG = l;
+
+    isCheckFaceCalled = true;
+    isCheckFaceCount = true;
+    //    options = [[MLKFaceDetectorOptions alloc] init];
+    //    options.performanceMode = MLKFaceDetectorPerformanceModeAccurate;
+    //    options.landmarkMode = MLKFaceDetectorLandmarkModeAll;
+    //    options.classificationMode = MLKFaceDetectorClassificationModeAll;
+
+    //    vision = [FIRVision vision];
+    //    faceDetector = [MLKFaceDetector faceDetectorWithOptions:options];
+
+    if(ischekLivenss){
+        isShowlivenessMSG = true;
+        livenessStatus = @"Frame your face";
+        [self blink:0];
+    }
+    if (self = [super init]) {
+        self.delegate = delegate;
+
+        videoCamera = [[CvVideoCamera alloc] init];
+        // videoCamera = [[CvVideoCamera alloc] initWithParentView:imageView];
+        videoCamera.delegate = self;
+        videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionFront;
+        videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1280x720;
+        videoCamera.defaultAVCaptureVideoOrientation = AVCaptureVideoOrientationPortrait;
+        videoCamera.defaultFPS = 30;
+        videoCamera.grayscaleMode = NO;
+        videoCamera.rotateVideo = NO;
+        //        [NSTimer scheduledTimerWithTimeInterval:3.0
+        //           target:self
+        //           selector:@selector(timer_Tick:)
+        //           userInfo:nil
+        //           repeats:NO];
+    }
+    return self;
+}
+
+-(void)drawFeaturesForFace:(UIImage *)image11{
+    if(isCheckFaceCalled) {
+
+        //                            UIImage* newCropImage = [self cropImage:image11];
+                                    //                             CGFloat imagewidth11 = newCropImage.size.width;
+                                    //                            CGFloat imageheight11 = newCropImage.size.height;
+                                    //                            NSLog(@"imagewidth11 %f",imagewidth11);
+                                    //                            NSLog(@"imageheight11 %f",imageheight11);
+                                    //                            UIImage* newCropImage1 = [self cropToBounds:newCropImage :imageheight11 :imageheight11];
+                                    CGFloat width11 = (image11.size.width / 1.7);
+                                    CGFloat height11 = (width11 * 1.4);
+                                    CGFloat x = (image11.size.width / 2) - (width11 / 2);
+                                    CGFloat y = (image11.size.height / 2) - (height11 / 2);
+
+                                    CGRect rect = CGRectMake(x, y, width11, height11);
+//                                    UIImage* newCropImage = [self cropImage:image11 cropToRect:rect];//crop according to oval rectangle
+                                    //                            NSLog(@"rect::%@", NSStringFromCGRect(rect));
+                                    CGFloat wX = rect.size.width * 0.15;
+                                    CGFloat wY = rect.size.height * 0.15;
+                                    CGFloat left = rect.origin.x - wX;
+                                    CGFloat top = rect.origin.y - wY;
+                                    CGFloat width = rect.size.width + (wX * 2);
+                                    CGFloat height = rect.size.height + (wY * 2);
+        CGRect extendOval = CGRectMake(left, top, width, height);
+//            cv::Mat brighter = cvMatFromUIImage(image11) - cvScalar(80, 80, 80);
+
+        NSString* pathModel2 = [[NSBundle mainBundle] pathForResource:@"haarcascade_frontalface_alt" ofType:@"xml"];
+
+
+
+        int ret1 = accurascan_facedetection_facedetectionutils_FaceDetectionProcessor_initEngine([pathModel2 UTF8String], -1, -1, -1, -1);
+//            accurascan_facedetection_facedetectionutils_FaceDetectionProcessor_initEngine( [pathModel2 UTF8String], -1, livenessBlur, livenessGlareMin, livenessGlareMax);
+        cv::Mat imgg = cvMatFromUIImage(image11);
+        int ret2  = checklivenessValidation(imgg, 90, -1, -1, -1);
+//                            NSLog(@"liveness:- %d, %d, %d", livenessBlur,livenessGlareMin, livenessGlareMax);
+//            double defaultBlur = 30.00*3.00;
+//                                [self saveLogToFile:[NSString stringWithFormat:@"B - %d",ret]];
+        if(ret2 == -3){
+            [self reco_msg_Liveness:feedBackGlareFaceMessage1];
+            isCheckFaceCount = true;
+            return ;
+        }
+        if(ret2 == -2){
+            [self reco_msg_Liveness:feedBackBlurFaceMessage1];
+            isCheckFaceCount = true;
+            return;
+        }
+        int pint[4];
+
+//        isCheckFaceCount = true;
+//        return;
+
+        int ret = accurascan_facedetection_facedetectionutils_FaceDetectionProcessor_detectFace(imgg, [[NSNumber numberWithFloat:left] intValue], [[NSNumber numberWithFloat:top] intValue], [[NSNumber numberWithFloat:width] intValue], [[NSNumber numberWithFloat:height] intValue],pint);
+
+            if(ret == -7) {
+                //                                doucumentMsg.text = feedBackCenterMessage1;
+                [self reco_msg_Liveness:feedBackCenterMessage1];
+                isCheckFaceCount = true;
+    //            [self saveLogToFile:[NSString stringWithFormat:@"Ce - %d  %d",(-10.0 >= face.headEulerAngleY),(face.headEulerAngleY >= 10)]];
+                return;
+
+            } else if (ret == -4) {
+                [self reco_msg_Liveness:feedBackOpenEyesMessage1];
+                isCheckFaceCount = true;
+    //            [self saveLogToFile:[NSString stringWithFormat:@"O - %d  %d",(face.rightEyeOpenProbability < 0.8?1:0),(face.rightEyeOpenProbability < 0.8?1:0)]];
+                return;
+
+            } else if (ret == -3) {
+                [self reco_msg_Liveness:feedBackAwayMessage1];
+                isCheckFaceCount = true;
+    //            [self saveLogToFile:[NSString stringWithFormat:@"A - %d  %d %d %d",(frame.origin.x < extendOval.origin.x?1:0),(frame.origin.y < extendOval.origin.y?1:0),((frame.size.width + frame.origin.x) > (extendOval.size.width + extendOval.origin.x)?1:0),((frame.size.height + frame.origin.y) > (extendOval.size.height + extendOval.origin.y)?1:0)]];
+                return;
+            } else if (ret == -2) {
+                [self reco_msg_Liveness:feedBackCloserMessage1];
+                isCheckFaceCount = true;
+    //            [self saveLogToFile:[NSString stringWithFormat:@"C - %d  %d %d %d",(frame.origin.x > insetOval.origin.x),(frame.origin.y > insetOval.origin.y),((frame.size.width + frame.origin.x) < (insetOval.size.width + insetOval.origin.x)),((frame.size.height + frame.origin.y) < (insetOval.size.height + insetOval.origin.y))]];
+                return;
+            } else if (ret == 0) {
+                isCheckFaceCount = true;
+                [self reco_msg_Liveness:feedBackframeMessage1];
+                return;
+            } else if (ret == -1) {
+                isCheckFaceCount = true;
+                [self reco_msg_Liveness:feedBackMultipleFaceMessage1];
+                return;
+            } else if (ret == -5) {
+    //            head Message
+                [self reco_msg_Liveness:feedBackFaceSteadyMessage1];
+                isCheckFaceCount = true;
+                return;
+             } else if (ret == -8) {
+                [self reco_msg_Liveness:feedBackLowLightMessage1];
+                isCheckFaceCount = true;
+                return;
+            } else if (ret == -9) {
+                [self reco_msg_Liveness:feedBackBlurFaceMessage1];
+                isCheckFaceCount = true;
+                return;
+            } else if (ret == -10) {
+                [self reco_msg_Liveness:feedBackGlareFaceMessage1];
+                isCheckFaceCount = true;
+                return;
+            } else if (ret == 1) {
+
+                if(ischekLivenss) {
+
+                    CGFloat wX = pint[2] * 0.18;
+                    CGFloat wY = pint[3] * 0.18;
+                    CGFloat left = pint[0] - wX;
+                    CGFloat top = pint[1] - wY;
+                    CGFloat width = pint[2] + (wX * 2);
+                    CGFloat height = pint[3] + (wY * 2);
+                    CGRect extendOval1 = CGRectMake(left, top, width, height);
+
+                   UIImage *img11 = [self cropToBounds:image11 :image11.size.width :image11.size.height];
+                    UIImage *CropImage = [self cropImage:image11 cropToRect:extendOval1];
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.delegate livenessData:img11 andshowImage:CropImage];
+                    });
+                }
+
+            } else {
+                isCheckFaceCount = true;
+                return;
+            }
+
+
+
+    }
+}
+
+-(UIImage *)cropToBounds:(UIImage *)image :(CGFloat)width :(CGFloat)height{
+
+    UIImage *contextImage = [[UIImage alloc] initWithCGImage:image.CGImage];
+    CGSize contextSize = contextImage.size;
+    CGFloat posX = 0.0;
+    CGFloat posY = 0.0;
+    CGFloat cgwidth = CGFloat(width);
+    CGFloat cgheight = CGFloat(height);
+
+    if (contextSize.width > contextSize.height) {
+        posX = ((contextSize.width - contextSize.height) / 2);
+        posY = 0;
+        cgwidth = contextSize.height;
+        cgheight = contextSize.height;
+    } else {
+        posX = 0;
+        posY = ((contextSize.height - contextSize.width) / 2);
+        cgwidth = contextSize.width;
+        cgheight = contextSize.width;
+//        cgwidth = 550;
+//        cgheight = 550;
+    }
+
+    CGRect rect = CGRectMake(posX, posY, cgwidth, cgheight);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([contextImage CGImage], rect);
+    UIImage *image1 = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return image1;
+}
+
+-(UIImage *)cropImage:(UIImage *)image cropToRect:(CGRect)rect{
+    UIImage *contextImage = [[UIImage alloc] initWithCGImage:image.CGImage];
+
+
+//    CGFloat width11 = (image.size.width / 1.7);
+//    CGFloat height11 = (width11 * 1.4);
+//    CGFloat newX = (image.size.width / 2) - (width11 / 2);
+//    CGFloat newY = (image.size.height / 2) - (height11 / 2);
+//
+//    CGRect rect = CGRectMake(newX, newY, width11, height11);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([contextImage CGImage], rect);
+    UIImage *image1 = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return image1;
+}
+-(void) reco_msg_Liveness:(NSString *)msg {
+    livenessStatus = msg;//[NSString stringWithUTF8String:msg.c_str()];
+
+//    doucumentMsg.text = [NSString stringWithUTF8String:msg.c_str()];
+
+
+}
+-(void) blink:(int)sec
+{
+    if(isShowlivenessMSG) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(sec * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+            if(![feedbackLivenessMSG.text isEqual: @""]) {
+                feedbackLivenessMSG.text = @"";
+                [self blink:600];
+            } else {
+                feedbackLivenessMSG.text = livenessStatus;
+                [self blink:1000];
+            }
+
+        });
+    }
+}
 
 -(id)initWithDelegate:(UIViewController<VideoCameraWrapperDelegate>*)delegate andImageView:(UIImageView *)iv andFacePath:(NSString*)FacePath {
     
@@ -143,7 +416,8 @@ BOOL ischeckMation;
     isFirstMSG = true;
     isHologram = true;
     ischeckMation = true;
-    
+    inProcessing = false;
+    ischekLivenss = false;
     
     
     PrimaryData primaryData = setTemplateFirst(firstTemp, wholeresponce, changeCard, cardPosition);
@@ -296,9 +570,17 @@ cv::Mat cvMatFromUIImage(UIImage* image)
     [videoCamera start];
     _isCapturing = YES;
     
-    if (threadrunning == NO) {
-        thread = [[NSThread alloc] initWithTarget:self selector:@selector(Recog_Thread) object:nil];
-        [thread start];
+    if(!ischekLivenss) {
+        if (threadrunning == NO) {
+            thread = [[NSThread alloc] initWithTarget:self selector:@selector(Recog_Thread) object:nil];
+            [thread start];
+        }
+    } else {
+        isShowlivenessMSG = true;
+        inProcessingLiveness = true;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            inProcessingLiveness = false;
+        });
     }
 }
 
@@ -314,7 +596,7 @@ cv::Mat cvMatFromUIImage(UIImage* image)
     lines = @"";
     imageView = nil;
     [thread cancel];
-    
+      _livOrg.release();
     threadrunning = NO;
 }
 
@@ -325,10 +607,19 @@ cv::Mat cvMatFromUIImage(UIImage* image)
 
 - (void)processImage:(cv::Mat&)image //This function is called per every frame
 {
-    
+
+    if (ischekLivenss) {
+        if (inProcessing) {
+            return;
+        }
+        inProcessing = true;
+    }
     [lock1 lock];
     _matOrg.release();
-     
+     _livOrg.release();
+     if (ischekLivenss) {
+         _livOrg = image.clone();
+     }
     if (ischeckMation){
         ischeckMation = false;
             int doCheckData1 = doCheckData(image, image.cols,  image.rows);
@@ -403,7 +694,25 @@ cv::Mat cvMatFromUIImage(UIImage* image)
     _matOrg.copyTo(matShow);
     [lock1 unlock];
     
-    [self.delegate processedImage: uiimageFromCVMat(matShow)];
+    if (ischekLivenss){
+        [self.delegate processedImage: uiimageFromCVMat(_livOrg)];
+    }else{
+        [self.delegate processedImage: uiimageFromCVMat(matShow)];
+    }
+
+    if (ischekLivenss){
+        inProcessing = false;
+        if (isCheckFaceCount){
+            if(inProcessingLiveness) {
+                return;
+            }
+            isCheckFaceCount = false;
+            UIImage* img = uiimageFromCVMat(_livOrg);
+//            dispatch_async(dispatch_get_main_queue(), ^{
+                [self drawFeaturesForFace:img];
+//            });
+        }
+    }
     matShow.release();
 }
 
@@ -458,6 +767,7 @@ cv::Mat cvMatFromUIImage(UIImage* image)
             if (isFirstMSG){
                 isFirstMSG = false;
                 [self.delegate onMessage: @"1"];
+                [self refreshPreview];
             }
             
         });
@@ -562,6 +872,7 @@ cv::Mat cvMatFromUIImage(UIImage* image)
     }else{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate onMessage: @""];
+            [self refreshPreview];
         });
     }
     
@@ -631,6 +942,7 @@ cv::Mat cvMatFromUIImage(UIImage* image)
             if(!isCheckMSG){
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.delegate onMessage: @""];
+                    [self refreshPreview];
                 });
             }
             
@@ -752,6 +1064,12 @@ cv::Mat cvMatFromUIImage(UIImage* image)
 -(void) reco_msg:(string)imgMsg
 {
     [self.delegate onMessage: [NSString stringWithUTF8String:imgMsg.c_str()]];
+}
+
+-(void) refreshPreview
+{
+    inProcessing = false;
+    isCheckFaceCount = true;
 }
 
 @end

@@ -19,8 +19,10 @@ typedef NS_ENUM(NSUInteger, RecType) {
 };
 
 @protocol VideoCameraWrapperDelegate <NSObject>
+@optional
 - (void)processedImage:(UIImage*)image;
 - (void)recognizeFailed:(NSString*)message;
 - (void)onMessage:(NSString*)message;
 - (void)matchedItem:(UIImage*)image dict:(NSMutableDictionary*)setData;
+-(void)livenessData:(UIImage*)livenessImage andshowImage:(UIImage*)showImage;
 @end

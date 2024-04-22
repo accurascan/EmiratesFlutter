@@ -3,14 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		1819E1762BD67BAD00DBE121 /* accuraface.license in Resources */ = {isa = PBXBuildFile; fileRef = 1819E1742BD67BAD00DBE121 /* accuraface.license */; };
+		1819E17A2BD67CD700DBE121 /* key.license in Resources */ = {isa = PBXBuildFile; fileRef = 1819E1792BD67CD600DBE121 /* key.license */; };
 		46694B4B24EFB946007E4454 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 46694B4A24EFB946007E4454 /* GoogleService-Info.plist */; };
-		46694B4E24EFBA80007E4454 /* accuraface.license in Resources */ = {isa = PBXBuildFile; fileRef = 46694B4C24EFBA7F007E4454 /* accuraface.license */; };
-		46694B4F24EFBA80007E4454 /* key.license in Resources */ = {isa = PBXBuildFile; fileRef = 46694B4D24EFBA80007E4454 /* key.license */; };
 		4F7F0C3F6F81EDEA734562D5 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEE1B777A213202B8E6A1A34 /* Pods_Runner.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -36,10 +36,10 @@
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		14A13375BF2658BB54A44AFD /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+		1819E1742BD67BAD00DBE121 /* accuraface.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = accuraface.license; sourceTree = "<group>"; };
+		1819E1792BD67CD600DBE121 /* key.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = key.license; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		46694B4A24EFB946007E4454 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		46694B4C24EFBA7F007E4454 /* accuraface.license */ = {isa = PBXFileReference; lastKnownFileType = text; path = accuraface.license; sourceTree = "<group>"; };
-		46694B4D24EFBA80007E4454 /* key.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = key.license; sourceTree = "<group>"; };
 		48A8F8188B1100DE8035924D /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,8 +89,8 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				46694B4C24EFBA7F007E4454 /* accuraface.license */,
-				46694B4D24EFBA80007E4454 /* key.license */,
+				1819E1742BD67BAD00DBE121 /* accuraface.license */,
+				1819E1792BD67CD600DBE121 /* key.license */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -205,13 +205,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46694B4E24EFBA80007E4454 /* accuraface.license in Resources */,
-				46694B4F24EFBA80007E4454 /* key.license in Resources */,
 				C9D7D0412483D839001F2EB8 /* AppFrameworkInfo.plist in Resources */,
 				C9D7D0402483D835001F2EB8 /* Assets.xcassets in Resources */,
+				1819E17A2BD67CD700DBE121 /* key.license in Resources */,
 				C9D7D03F2483D81A001F2EB8 /* LaunchScreen.storyboard in Resources */,
 				46694B4B24EFB946007E4454 /* GoogleService-Info.plist in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				1819E1762BD67BAD00DBE121 /* accuraface.license in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,7 +396,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = JA79VPTEAU;
+				DEVELOPMENT_TEAM = RQLGL75S5H;
 				ENABLE_BITCODE = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
@@ -546,7 +546,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = JA79VPTEAU;
+				DEVELOPMENT_TEAM = RQLGL75S5H;
 				ENABLE_BITCODE = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
@@ -590,7 +590,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = JA79VPTEAU;
+				DEVELOPMENT_TEAM = RQLGL75S5H;
 				ENABLE_BITCODE = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
