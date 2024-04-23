@@ -490,7 +490,6 @@ bool inProcessingLiveness = false;
 
 UIImage* uiimageFromCVMat(cv::Mat &cvMat)
 {
-    //Check input cv::mat empty or not
     @autoreleasepool {
         if (cvMat.empty()) {
             return nil;
@@ -498,38 +497,43 @@ UIImage* uiimageFromCVMat(cv::Mat &cvMat)
         
         CGColorSpaceRef colorSpace;
         
-        if (cvMat.elemSize() == 1) {
+        if (cvMat.channels() == 1) {
             colorSpace = CGColorSpaceCreateDeviceGray();
+        } else if (cvMat.channels() == 3) {
+            colorSpace = CGColorSpaceCreateDeviceRGB();
         } else {
             colorSpace = CGColorSpaceCreateDeviceRGB();
         }
-        cv::Mat mat1 = cvMat.clone();
-        if (cvMat.elemSize() == 4) {
-            cv::cvtColor(mat1, mat1, CV_BGRA2RGBA);
-        }
-        NSData *data = [NSData dataWithBytes:mat1.data length:mat1.elemSize() * mat1.total()];
         
+        // Convert to RGBA if needed
+        cv::Mat mat1 = cvMat.clone();
+        if (cvMat.channels() == 4) {
+            cv::cvtColor(mat1, mat1, cv::COLOR_BGRA2RGBA);
+        }
+        
+        NSData *data = [NSData dataWithBytes:mat1.data length:mat1.elemSize() * mat1.total()];
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
         
-        CGImageRef imageRef = CGImageCreate(mat1.cols, // Width
-                                            mat1.rows, // Height
-                                            8, // Bits per component
-                                            8 * mat1.elemSize(), // Bits per pixel
-                                            mat1.step[0], // Bytes per row
-                                            colorSpace, // Colorspace
-                                            kCGImageAlphaNone | kCGBitmapByteOrderDefault, // Bitmap info flags
-                                            provider, // CGDataProviderRef
-                                            NULL, // Decode
-                                            false, // Should interpolate
-                                            kCGRenderingIntentDefault); // Intent
+        CGImageRef imageRef = CGImageCreate(mat1.cols,  // Width
+                                            mat1.rows,  // Height
+                                            8,  // Bits per component
+                                            8 * mat1.elemSize(),  // Bits per pixel
+                                            mat1.step[0],  // Bytes per row
+                                            colorSpace,  // Colorspace
+                                            kCGImageAlphaPremultipliedLast | kCGBitmapByteOrderDefault,  // Bitmap info flags
+                                            provider,  // CGDataProviderRef
+                                            NULL,  // Decode
+                                            false,  // Should interpolate
+                                            kCGRenderingIntentDefault);  // Intent
         
         UIImage *image = [[UIImage alloc] initWithCGImage:imageRef];
+        
+        // Release resources
         CGImageRelease(imageRef);
         CGDataProviderRelease(provider);
         CGColorSpaceRelease(colorSpace);
-        mat1.release();
-        return image;
         
+        return image;
     }
 }
 

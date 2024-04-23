@@ -1005,8 +1005,6 @@ class _result_activityState extends State<result_activity> {
                         await _channel.invokeMethod(
                             'faceimage').then((value) async => {
                           // setState(() async {
-
-                          print(";,cposmkcs$value"),
                           if (value != null) {
                             facecheckimage = await _channel.invokeMethod(
                                 'facecrop', {

@@ -10,7 +10,7 @@ import android.util.Log;
 
 //import com.accurascan.accuraemirates.sdk.BuildConfig;
 
-import com.crashlytics.android.answers.BuildConfig;
+import com.accurascan.accuraemirates.BuildConfig;
 
 import java.io.BufferedWriter;
 import java.io.File;

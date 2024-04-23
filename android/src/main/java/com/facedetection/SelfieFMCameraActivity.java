@@ -36,10 +36,9 @@ import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 
-//import com.accurascan.accuraemirates.sdk.BuildConfig;
+import com.accurascan.accuraemirates.BuildConfig;
 //import com.accurascan.accuraemirates.sdk.R;
 import com.accurascan.accuraemirates.R;
-import com.crashlytics.android.answers.BuildConfig;
 import com.docrecog.scan.CameraActivity;
 import com.facedetection.common.BitmapUtils;
 import com.facedetection.common.CameraSource;

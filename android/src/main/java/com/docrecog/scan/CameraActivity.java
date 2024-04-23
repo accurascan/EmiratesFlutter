@@ -49,6 +49,10 @@ import android.widget.Toast;
 //import com.accurascan.accuraemirates.R;
 //import com.accurascan.accuraemirates.camera.CameraHolder;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.accurascan.accuraemirates.FocusManager;
 import com.accurascan.accuraemirates.R;
 import com.accurascan.accuraemirates.camera.CameraHolder;
@@ -77,9 +81,6 @@ import java.util.Locale;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.MethodCall;
