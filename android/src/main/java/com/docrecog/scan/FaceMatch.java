@@ -146,6 +146,7 @@ public class FaceMatch implements FaceCallback {
 //        ivUserProfile2.setVisibility(View.VISIBLE);
 
         //if (RecogEngine.g_recogResult.faceBitmap != null) {
+        FaceDetectionResult _leftResult = new FaceDetectionResult();
         if (face1 != null && !face1.isRecycled()) {
             //Bitmap nBmp = RecogEngine.g_recogResult.faceBitmap.copy(Bitmap.Config.ARGB_8888, true);
             Bitmap nBmp = face1.copy(Bitmap.Config.ARGB_8888, true);
@@ -156,7 +157,64 @@ public class FaceMatch implements FaceCallback {
             int s = (w * 32 + 31) / 32 * 4;
             ByteBuffer buff = ByteBuffer.allocate(s * h);
             nBmp.copyPixelsToBuffer(buff);
-            DetectLeftFace(buff.array(), w, h);
+//            DetectLeftFace(buff.array(), w, h);
+            FaceLockHelper.DetectLeftFace(buff.array(), w, h, _leftResult);
+            onLeftDetect(_leftResult);
+        }
+        if (face2 != null && !face2.isRecycled()) {
+            Bitmap nBmp = face2.copy(Bitmap.Config.ARGB_8888, true);
+            int w = nBmp.getWidth();
+            int h = nBmp.getHeight();
+            int s = (w * 32 + 31) / 32 * 4;
+            ByteBuffer buff = ByteBuffer.allocate(s * h);
+            nBmp.copyPixelsToBuffer(buff);
+            nBmp.recycle();
+            FaceDetectionResult _rightResult = new FaceDetectionResult();
+            if (leftResult != null) {
+                FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature(), _rightResult);
+            } else {
+                FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature(), _rightResult);
+            }
+            CameraActivity.leftResult = leftResult;
+
+            {
+                Matrix matrix = new Matrix();
+                matrix.postScale(-1, 1, face2.getWidth() / 2f, face2.getHeight() / 2f);
+                Bitmap invertTarget = Bitmap.createBitmap(face2, 0, 0, face2.getWidth(), face2.getHeight(), matrix, true);
+                int iw = invertTarget.getWidth();
+                int ih = invertTarget.getHeight();
+                int is = (iw * 32 + 31) / 32 * 4;
+                ByteBuffer iBuff = ByteBuffer.allocate(is * ih);
+                invertTarget.copyPixelsToBuffer(iBuff);
+                FaceDetectionResult invertRightResult = new FaceDetectionResult();
+                if (leftResult != null) {
+                    FaceLockHelper.DetectRightFace(iBuff.array(), iw, ih, leftResult.getFeature(), invertRightResult);
+                } else
+                    FaceLockHelper.DetectRightFace(iBuff.array(), iw, ih, null, invertRightResult);
+                invertTarget.recycle();
+                if (leftResult != null && leftResult.getFeature() != null && _rightResult.getFeature() != null && invertRightResult.getFeature() != null) {
+                    float match_score = FaceLockHelper.Similarity(leftResult.getFeature(), _rightResult.getFeature(), _rightResult.getFeature().length);
+                    float score = (match_score * 100.0f);
+                    if (invertRightResult.getFeature() != null) {
+                        float i_match_score = FaceLockHelper.Similarity(leftResult.getFeature(), invertRightResult.getFeature(), invertRightResult.getFeature().length);
+                        float i_score = (i_match_score * 100.0f);
+                        float final_score = 0;
+                        if (score >= 60 && i_score >= 60) {
+                            final_score = Math.max(score, i_score);
+                        } else {
+                            final_score = Math.min(score, i_score);
+                        }
+                        Log.e("TAG", "startFaceMatch: " + match_score + ", " + i_match_score + ", " + final_score);
+                        if (final_score == i_score) {
+                            _rightResult.setFeature(invertRightResult.getFeature());
+                        }
+                    }
+//                    return;
+                }
+            }
+            if (_rightResult.getFeature() != null) {
+                this.onRightDetect(_rightResult);
+            }
         }
     }
 
@@ -281,23 +339,6 @@ public class FaceMatch implements FaceCallback {
         leftResult = null;
         if (faceResult != null) {
             leftResult = faceResult;
-
-            if (FaceMatch.face2 != null && !FaceMatch.face2.isRecycled()) {
-                Bitmap nBmp = FaceMatch.face2.copy(Bitmap.Config.ARGB_8888, true);
-                if (nBmp != null && !nBmp.isRecycled()) {
-                    int w = nBmp.getWidth();
-                    int h = nBmp.getHeight();
-                    int s = (w * 32 + 31) / 32 * 4;
-                    ByteBuffer buff = ByteBuffer.allocate(s * h);
-                    nBmp.copyPixelsToBuffer(buff);
-                    if (leftResult != null) {
-                        DetectRightFace(buff.array(), w, h, leftResult.getFeature());
-                    } else {
-                        DetectRightFace(buff.array(), w, h, null);
-                    }
-                    CameraActivity.leftResult = leftResult;
-                }
-            }
         }
     }
 

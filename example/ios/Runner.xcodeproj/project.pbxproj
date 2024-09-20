@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		180554452BD7791600B68C14 /* key.license in Resources */ = {isa = PBXBuildFile; fileRef = 180554442BD7791600B68C14 /* key.license */; };
-		1819E1762BD67BAD00DBE121 /* accuraface.license in Resources */ = {isa = PBXBuildFile; fileRef = 1819E1742BD67BAD00DBE121 /* accuraface.license */; };
+		181DC4352C9D3EB200F10788 /* key.license in Resources */ = {isa = PBXBuildFile; fileRef = 181DC4342C9D3EB200F10788 /* key.license */; };
+		181DC4372C9D3EC500F10788 /* accuraface.license in Resources */ = {isa = PBXBuildFile; fileRef = 181DC4362C9D3EC400F10788 /* accuraface.license */; };
 		46694B4B24EFB946007E4454 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 46694B4A24EFB946007E4454 /* GoogleService-Info.plist */; };
 		4F7F0C3F6F81EDEA734562D5 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEE1B777A213202B8E6A1A34 /* Pods_Runner.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -36,8 +36,8 @@
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		14A13375BF2658BB54A44AFD /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
-		180554442BD7791600B68C14 /* key.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = key.license; sourceTree = "<group>"; };
-		1819E1742BD67BAD00DBE121 /* accuraface.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = accuraface.license; sourceTree = "<group>"; };
+		181DC4342C9D3EB200F10788 /* key.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = key.license; sourceTree = "<group>"; };
+		181DC4362C9D3EC400F10788 /* accuraface.license */ = {isa = PBXFileReference; lastKnownFileType = file; path = accuraface.license; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		46694B4A24EFB946007E4454 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		48A8F8188B1100DE8035924D /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -89,8 +89,8 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				1819E1742BD67BAD00DBE121 /* accuraface.license */,
-				180554442BD7791600B68C14 /* key.license */,
+				181DC4362C9D3EC400F10788 /* accuraface.license */,
+				181DC4342C9D3EB200F10788 /* key.license */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -207,11 +207,11 @@
 			files = (
 				C9D7D0412483D839001F2EB8 /* AppFrameworkInfo.plist in Resources */,
 				C9D7D0402483D835001F2EB8 /* Assets.xcassets in Resources */,
+				181DC4352C9D3EB200F10788 /* key.license in Resources */,
 				C9D7D03F2483D81A001F2EB8 /* LaunchScreen.storyboard in Resources */,
 				46694B4B24EFB946007E4454 /* GoogleService-Info.plist in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
-				1819E1762BD67BAD00DBE121 /* accuraface.license in Resources */,
-				180554452BD7791600B68C14 /* key.license in Resources */,
+				181DC4372C9D3EC500F10788 /* accuraface.license in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,7 +419,7 @@
 				);
 				MARKETING_VERSION = 1.0.9;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.accurascan.accuraemiratesDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.accurascan.accuraemirates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -569,7 +569,7 @@
 				);
 				MARKETING_VERSION = 1.0.9;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.accurascan.accuraemiratesDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.accurascan.accuraemirates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -613,7 +613,7 @@
 				);
 				MARKETING_VERSION = 1.0.9;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.accurascan.accuraemiratesDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.accurascan.accuraemirates;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

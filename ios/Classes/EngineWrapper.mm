@@ -8,11 +8,13 @@
 #import "ImageHelper.h"
 #import "NSFaceRegion.h"
 //
+#import <UIKit/UIKit.h>
 #include "types.h"
 #include "faceengine.h"
 #include "zinterface.mm"
 
 int g_nEngineInit = -100;
+NSFaceRegion* invertedImg;
 
 @implementation EngineWrapper
 
@@ -54,21 +56,39 @@ int g_nEngineInit = -100;
  */
 +(double) Identify:(NSData*)pbuff1 featurebuff2:(NSData*)pbuff2
 {
+    NSData* pbuffIn = invertedImg.feature;
+    
     float* feature1 = (float*)[pbuff1 bytes];
     int   len1 = [pbuff1 length];
     float* feature2 = (float*)[pbuff2 bytes];
     int   len2 = [pbuff2 length];
+    float* feature3 = (float*)[pbuffIn bytes];
+    int   len3 = [pbuffIn length];
     
-    float score = 0.0;
-    if (len1 == 0 || len2 == 0 || feature1 == nil || feature2 == nil)
+//    float score = 0.0;
+    float score1 = 0.0;
+    float score2 = 0.0;
+    
+    if (len1 == 0 || len2 == 0 || len3 == 0 || feature1 == nil || feature2 == nil || feature3 == nil)
         return 0.0f;
     
-        SResult ret = Identify(len1, feature1, len2, feature2, &score);
-        if (ret != wOK)
+        SResult ret1 = Identify(len1, feature1, len2, feature2, &score1);
+        if (ret1 != wOK)
         {
             return 0.0;
         }
-    return score;
+        SResult ret2 = Identify(len1, feature1, len3, feature3, &score2);
+        if (ret2 != wOK)
+        {
+            return 0.0;
+        }
+    if(score1 < 0.60 || score2 < 0.60)
+    {
+        return MIN(score1, score2);
+    }else{
+        return MAX(score1, score2);
+    }
+//    return score;
 }
 
 /**
@@ -129,9 +149,29 @@ int g_nEngineInit = -100;
  *
  * This method will return image.
  */
+
+UIImage* horizontallyInvertedImage(UIImage *image) {
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Move the origin to the middle of the image so we can flip it
+    CGContextTranslateCTM(context, image.size.width / 2, image.size.height / 2);
+    CGContextScaleCTM(context, -1.0, 1.0);
+    CGContextTranslateCTM(context, -image.size.width / 2, -image.size.height / 2);
+    
+    // Draw the image into the context
+    [image drawAtPoint:CGPointZero];
+    
+    // Get the new image
+    UIImage *invertedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return invertedImage;
+}
+
 +(NSFaceRegion*) DetectTargetFaces:(UIImage*) image feature1:(NSData*) feature1
 {
-    
+    UIImage* invImg = horizontallyInvertedImage(image);
     if ([self IsEngineInit] == NO)
         return nil;
     
@@ -172,6 +212,49 @@ int g_nEngineInit = -100;
     }
     region.image = image;
     free(inbits);
+    
+    if ([self IsEngineInit] == NO)
+        return nil;
+    
+    NSFaceRegion* regionN = [[NSFaceRegion alloc] init];
+    regionN.image = nil;
+    unsigned char* inbitsN = [ImageHelper bitmapFromImage:invImg];
+    if (inbitsN == NULL)
+    {
+        NSLog(@"Image buf fer is Null");
+        return nil;
+    }
+    
+    int imgSizeN = ([invImg size].width * 32 + 31) / 32 * 4 * [invImg size].height ;
+    int imgWidthN = [invImg size].width;
+    int imgHeightN = [invImg size].height;
+    float* pFeature1N = (float*)[feature1 bytes];
+    
+    int nFaceCountN = 0;
+    SFaceExt pFacesN;
+    SResult retN = DetectTargetFace(inbitsN, (DWORD)imgSizeN, (DWORD)imgWidthN, (DWORD)imgHeightN, (int *)&nFaceCountN, &pFacesN, pFeature1N);
+    
+    if (retN == wOK) {
+        if (nFaceCountN > 0) {
+            SWRect rectN = pFacesN.Rectangle;
+            CGFloat fxN = (CGFloat)rectN.X;
+            CGFloat fyN = (CGFloat)rectN.Y;
+            
+            CGFloat fwN = (CGFloat)rectN.Width;
+            CGFloat fhN = (CGFloat)rectN.Height;
+            
+            regionN.bound = CGRectMake(fxN, fyN, fwN, fhN);
+            regionN.confidence = pFacesN.Confidence;
+            regionN.face = 1;
+            
+            regionN.feature = [NSData dataWithBytes:pFacesN.featureData length:pFacesN.nFeatureSize*sizeof(float)];
+            
+        }
+    }
+    regionN.image = invImg;
+    free(inbitsN);
+    invertedImg = regionN;
+    
     return region;
 }
 
