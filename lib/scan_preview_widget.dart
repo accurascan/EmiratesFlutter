@@ -9,8 +9,8 @@ class ScanPreviewWidget extends StatefulWidget {
   ScanPreviewWidget(
       {this.laserColor = 0xFF00FF00,
       this.borderColor = 0xFFFFFFFF,
-      this.onScannerCreated,
-      @required this.onScanResult});
+      required this.onScannerCreated,
+      required this.onScanResult});
 
   final Function(ScanPreviewController) onScannerCreated;
 
@@ -23,8 +23,6 @@ class ScanPreviewWidget extends StatefulWidget {
 }
 
 class ScanPreviewWidgetState extends State<ScanPreviewWidget> {
-  ScanPreviewController controller;
-
   final BasicMessageChannel _messageChannel =
       BasicMessageChannel("scan_preview_message", StandardMessageCodec());
 
@@ -34,7 +32,7 @@ class ScanPreviewWidgetState extends State<ScanPreviewWidget> {
     _messageChannel.setMessageHandler(_messageHandler);
   }
 
-  Future<dynamic> _messageHandler(Object message) async {
+  Future<dynamic> _messageHandler(message) async {
     widget.onScanResult(message);
   }
 
