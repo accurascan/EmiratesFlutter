@@ -46,8 +46,6 @@ public abstract class SensorsActivity extends Activity implements SensorEventLis
     private static float prevGrav = 0.0f;
     private static float prevMag = 0.0f;
 
-    public abstract void configureFlutterEngine(FlutterEngine flutterEngine);
-
     /**
      * {@inheritDoc}
      */

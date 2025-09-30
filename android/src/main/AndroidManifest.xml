@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application >
-        <activity android:name="com.accurascan.accuraemirates.AccuraemiratesPlugin"/>
         <activity android:name="com.facedetection.SelfieFMCameraActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="locked"/>

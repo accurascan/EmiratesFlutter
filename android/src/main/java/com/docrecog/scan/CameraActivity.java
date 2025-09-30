@@ -44,10 +44,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.flutter.plugin.common.BinaryMessenger;
+
 //import com.accurascan.accuraemirates.FocusManager;
 //import com.accurascan.accuraemirates.FocusManager.Listener;
 //import com.accurascan.accuraemirates.R;
 //import com.accurascan.accuraemirates.camera.CameraHolder;
+
+import com.accurascan.accuraemirates.AccuraemiratesPlugin;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -85,7 +89,6 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.common.StringCodec;
 import io.flutter.plugin.platform.PlatformView;
@@ -98,7 +101,6 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private int width;
     private int height;
     private Context context;
-    private PluginRegistry.Registrar registrar;
     private Activity activity;
     private MethodChannel channel;
     private BasicMessageChannel messageChannel;
@@ -231,24 +233,17 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
     private int frameCount = 0;
     private String newMessage = "";
 
-    @Override
-    public void configureFlutterEngine(FlutterEngine flutterEngine) {
-        mContext = this;
-        class_flutterEngine = flutterEngine;
-        methodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL);
-        methodChannel.setMethodCallHandler(this);
-    }
-
-    public CameraActivity(Context context, PluginRegistry.Registrar mPluginRegistrar, int id) {
+    public CameraActivity(Context context, Context applicationContext, int id, BinaryMessenger binaryMessenger) {
         this.context = context;
-        this.registrar = mPluginRegistrar;
-        this.activity = mPluginRegistrar.activity();
+        this.activity = AccuraemiratesPlugin.activity;
         this.cameraid = 0;
 
-        channel = new MethodChannel(mPluginRegistrar.messenger(), "scan_preview");
-        messageChannel = new BasicMessageChannel<>(mPluginRegistrar.messenger(), "scan_preview_message", StandardMessageCodec.INSTANCE);
-        messageChannel_facematch = new BasicMessageChannel<>(mPluginRegistrar.messenger(), "scan_preview_message", StringCodec.INSTANCE);
+        channel = new MethodChannel(binaryMessenger, CHANNEL);
+    
+        messageChannel = new BasicMessageChannel<>(binaryMessenger, "scan_preview_message", StandardMessageCodec.INSTANCE);
+        messageChannel_facematch = new BasicMessageChannel<>(binaryMessenger, "scan_preview_message", StringCodec.INSTANCE);
         channel.setMethodCallHandler(this);
+        // Register the platform view factory
 
         dm = context.getResources().getDisplayMetrics();
         mCameraId = CameraHolder.instance().getBackCameraId();
@@ -313,10 +308,10 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
             mCameraOpenThread.join();
 //            mCameraOpenThread = null;
             if (mOpenCameraFail) {
-                Util.showErrorAndFinish(activity, R.string.cannot_connect_camera);
+                Util.showErrorAndFinish(AccuraemiratesPlugin.activity, R.string.cannot_connect_camera);
                 return;
             } else if (mCameraDisabled) {
-                Util.showErrorAndFinish(activity, R.string.camera_disabled);
+                Util.showErrorAndFinish(AccuraemiratesPlugin.activity, R.string.camera_disabled);
                 return;
             }
         } catch (
@@ -511,8 +506,8 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                 FaceMatch faceinit = new FaceMatch(context);
                 int val = faceinit.initEngine();
                 if(val == 0){
-                    Intent intent = new Intent(activity, SelfieFMCameraActivity.class);
-                    activity.startActivity(intent);
+                    Intent intent = new Intent(AccuraemiratesPlugin.activity, SelfieFMCameraActivity.class);
+                    AccuraemiratesPlugin.activity.startActivity(intent);
                 }
                 break;
         }
@@ -1052,11 +1047,11 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                                 String sex;
                                 if (g_recogResult.sex.equalsIgnoreCase("F")) {
 
-                                    sex = activity.getString(R.string.text_female);
+                                    sex = activity != null ? activity.getString(R.string.text_female) : "Female";
 
                                 } else {
 
-                                    sex = activity.getString(R.string.text_male);
+                                    sex = activity != null ? activity.getString(R.string.text_male) : "Male";
 
 
                                 }
@@ -1139,11 +1134,11 @@ public class CameraActivity extends SensorsActivity implements PlatformView, Met
                             String Result = "";
 
                             if (g_recogResult.ret == 0) {
-                                Result = activity.getString(R.string.failed);
+                                Result = activity != null ? activity.getString(R.string.failed) : "Failed";
                             } else if (g_recogResult.ret == 1) {
-                                Result = activity.getString(R.string.correct_mrz);
+                                Result = activity != null ? activity.getString(R.string.correct_mrz) : "Correct MRZ";
                             } else if (g_recogResult.ret == 2) {
-                                Result = activity.getString(R.string.incorrect_mrz);
+                                Result = activity != null ? activity.getString(R.string.incorrect_mrz) : "Incorrect MRZ";
                             }
 
                             HashMap<String, String> prodHashMap = new HashMap<String, String>();
