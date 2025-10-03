@@ -25,7 +25,7 @@ apply plugin: 'com.android.library'
 
 android {
     namespace "com.accurascan.accuraemirates"
-    compileSdkVersion 30
+    compileSdkVersion 36
 
     defaultConfig {
         minSdkVersion 21
